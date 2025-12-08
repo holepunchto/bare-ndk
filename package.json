@@ -1,0 +1,43 @@
+{
+  "name": "bare-ndk",
+  "version": "0.1.0",
+  "description": "Android NDK runtime for Bare",
+  "exports": {
+    "./package": "./package.json",
+    ".": "./index.js",
+    "./runtime": "./runtime.js"
+  },
+  "files": [
+    "index.js",
+    "runtime.js",
+    "binding.c",
+    "binding.js",
+    "CMakeLists.txt",
+    "lib",
+    "prebuilds"
+  ],
+  "addon": true,
+  "scripts": {
+    "test": "prettier . --check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holepunchto/bare-ndk.git"
+  },
+  "author": "Holepunch",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/holepunchto/bare-ndk/issues"
+  },
+  "homepage": "https://github.com/holepunchto/bare-ndk#readme",
+  "dependencies": {
+    "require-asset": "^1.1.0"
+  },
+  "devDependencies": {
+    "brittle": "^3.18.0",
+    "cmake-bare": "^1.6.5",
+    "cmake-fetch": "^1.4.0",
+    "prettier": "^3.4.1",
+    "prettier-config-holepunch": "^2.0.0"
+  }
+}
