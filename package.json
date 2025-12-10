@@ -1,7 +1,7 @@
 {
   "name": "bare-ndk",
   "version": "0.1.0",
-  "description": "Android NDK runtime for Bare",
+  "description": "Android NDK bindings and runtime for Bare",
   "exports": {
     "./package": "./package.json",
     ".": "./index.js",
@@ -10,7 +10,7 @@
   "files": [
     "index.js",
     "runtime.js",
-    "binding.c",
+    "binding.cc",
     "binding.js",
     "CMakeLists.txt",
     "lib",

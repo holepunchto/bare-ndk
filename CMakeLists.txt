@@ -1,14 +1,28 @@
 cmake_minimum_required(VERSION 4.0)
 
-set(ANDROID_STL c++_shared)
-
 find_package(cmake-bare REQUIRED PATHS node_modules/cmake-bare)
 find_package(cmake-fetch REQUIRED PATHS node_modules/cmake-fetch)
 
-project(bare_android C)
+project(bare_android C CXX)
 
 fetch_package("github:holepunchto/bare@1.24.5")
 fetch_package("github:holepunchto/libpath")
+fetch_package("github:holepunchto/libjnitl")
+
+add_bare_module(bare_ndk)
+
+target_sources(
+  ${bare_ndk}
+  PRIVATE
+    binding.cc
+)
+
+target_link_libraries(
+  ${bare_ndk}
+  PUBLIC
+    jnitl
+    android
+)
 
 add_library(bare_runtime SHARED)
 
@@ -34,14 +48,10 @@ target_link_libraries(
     log_static
     rlimit_static
     path_static
-)
-
-target_link_libraries(
-  bare_runtime
   PRIVATE
+    jnitl
     android
 )
-
 
 target_link_options(
   bare_runtime

@@ -21,6 +21,8 @@ static bare_t *bare;
 
 static int bare__timer;
 
+ANativeActivity *bare_native_activity;
+
 static void
 bare__on_shutdown(uv_async_t *handle) {
   uv_close((uv_handle_t *) handle, NULL);
@@ -133,6 +135,8 @@ bare__on_resume(ANativeActivity *activity) {
 void
 ANativeActivity_onCreate(ANativeActivity *activity, void *state, size_t len) {
   int err;
+
+  bare_native_activity = activity;
 
   err = log_open("bare", 0);
   assert(err == 0);

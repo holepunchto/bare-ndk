@@ -1,6 +1,6 @@
 # bare-ndk
 
-Android NDK runtime for Bare.
+Android NDK bindings and runtime for Bare.
 
 ## License
 
