@@ -52,11 +52,11 @@ bare_ndk_activity_content_view(js_env_t *env, js_callback_info_t *info) {
   assert(argc == 2);
 
   bare_ndk_activity_t *activity;
-  err = js_get_value_external(env, js_external_t<bare_ndk_activity_t>(argv[0]), activity);
+  err = js_get_value(env, js_external_t<bare_ndk_activity_t>(argv[0]), activity);
   assert(err == 0);
 
   bare_ndk_view_t *view;
-  err = js_get_value_external(env, js_external_t<bare_ndk_view_t>(argv[1]), view);
+  err = js_get_value(env, js_external_t<bare_ndk_view_t>(argv[1]), view);
   assert(err == 0);
 
   auto set_content_view = activity->init.get_method<void(java_object_t<"android/view/View">)>("setContentView");

@@ -23,7 +23,9 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("activityContentView", bare_ndk_activity_content_view)
 
   V("webViewInit", bare_ndk_web_view_init)
+  V("webViewDebuggingEnabled", bare_ndk_web_view_debugging_enabled)
   V("webViewLoadURL", bare_ndk_web_view_load_url)
+  V("webViewLoadData", bare_ndk_web_view_load_data)
 #undef V
 
 #define V(name, n) \
