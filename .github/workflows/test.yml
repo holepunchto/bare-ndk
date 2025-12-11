@@ -32,7 +32,7 @@ jobs:
           node-version: lts/*
       - run: npm install -g bare-runtime bare-make
       - run: npm install
-      - run: bare-make generate --platform ${{ matrix.platform }} --arch ${{ matrix.arch }} --debug -D ANDROID_STL=c++_shared
+      - run: bare-make generate --platform ${{ matrix.platform }} --arch ${{ matrix.arch }} --debug -D ANDROID_PLATFORM=android-34 -D ANDROID_STL=c++_shared
       - run: bare-make build
       - run: bare-make install
       - run: npm test
