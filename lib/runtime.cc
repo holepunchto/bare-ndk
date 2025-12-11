@@ -96,60 +96,15 @@ bare__on_timeout(int fd, int events, void *data) {
   return 1;
 }
 
-static void
-bare__on_start(ANativeActivity *activity) {
-  int err;
-}
-
-static void
-bare__on_destroy(ANativeActivity *activity) {
-  int err;
-
-  ALooper *looper = ALooper_forThread();
-
-  err = ALooper_removeFd(looper, bare__loop->backend_fd);
-  assert(err == 1);
-
-  err = ALooper_removeFd(looper, bare__timer);
-  assert(err == 1);
-
-  close(bare__timer);
-
-  err = uv_async_send(&bare__shutdown);
-  assert(err == 0);
-
-  err = bare_terminate(bare);
-  assert(err == 0);
-
-  err = bare_run(bare, UV_RUN_NOWAIT);
-  assert(err >= 0);
-}
-
-static void
-bare__on_pause(ANativeActivity *activity) {
-  int err;
-
-  err = bare_suspend(bare, 0);
-  assert(err == 0);
-}
-
-static void
-bare__on_resume(ANativeActivity *activity) {
-  int err;
-
-  err = bare_resume(bare);
-  assert(err == 0);
-}
-
 extern "C" void
-Java_to_holepunch_bare_Activity_onCreate(JNIEnv *env, jobject self, jobject assetManager) {
+Java_to_holepunch_bare_Activity_setup(JNIEnv *env, jobject self, jobject state, jobject assets) {
   int err;
 
   bare__native_activity.env = env;
 
   bare__native_activity.clazz = env->NewGlobalRef(self);
 
-  bare__native_activity.assetManager = AAssetManager_fromJava(env, assetManager);
+  bare__native_activity.assetManager = AAssetManager_fromJava(env, assets);
 
   err = log_open("bare", 0);
   assert(err == 0);
@@ -194,4 +149,44 @@ Java_to_holepunch_bare_Activity_onCreate(JNIEnv *env, jobject self, jobject asse
   assert(err == 1);
 
   bare__run();
+}
+
+extern "C" void
+Java_to_holepunch_bare_Activity_teardown(JNIEnv *env, jobject self) {
+  int err;
+
+  ALooper *looper = ALooper_forThread();
+
+  err = ALooper_removeFd(looper, bare__loop->backend_fd);
+  assert(err == 1);
+
+  err = ALooper_removeFd(looper, bare__timer);
+  assert(err == 1);
+
+  close(bare__timer);
+
+  err = uv_async_send(&bare__shutdown);
+  assert(err == 0);
+
+  err = bare_terminate(bare);
+  assert(err == 0);
+
+  err = bare_run(bare, UV_RUN_NOWAIT);
+  assert(err >= 0);
+}
+
+extern "C" void
+Java_to_holepunch_bare_Activity_suspend(JNIEnv *env, jobject self) {
+  int err;
+
+  err = bare_suspend(bare, 0);
+  assert(err == 0);
+}
+
+extern "C" void
+Java_to_holepunch_bare_Activity_resume(JNIEnv *env, jobject self) {
+  int err;
+
+  err = bare_resume(bare);
+  assert(err == 0);
 }
