@@ -15,8 +15,6 @@ extern ANativeActivity *bare_native_activity;
 struct bare_ndk_activity_t {
   java_global_ref_t<java_object_t<"android/app/Activity">> handle;
 
-  java_global_ref_t<java_class_t<"android/app/Activity">> init;
-
   java_env_t java;
 };
 
@@ -27,8 +25,6 @@ bare_ndk_activity_init(js_env_t *env, js_callback_info_t *info) {
   auto activity = new bare_ndk_activity_t();
 
   activity->java = bare_native_activity->env;
-
-  activity->init = java_class_t<"android/app/Activity">(activity->java);
 
   activity->handle = java_object_t<"android/app/Activity">(activity->java, bare_native_activity->clazz);
 
@@ -59,7 +55,7 @@ bare_ndk_activity_content_view(js_env_t *env, js_callback_info_t *info) {
   err = js_get_value(env, js_external_t<bare_ndk_view_t>(argv[1]), view);
   assert(err == 0);
 
-  auto set_content_view = activity->init.get_method<void(java_object_t<"android/view/View">)>("setContentView");
+  auto set_content_view = activity->handle.get_class().get_method<void(java_object_t<"android/view/View">)>("setContentView");
 
   set_content_view(activity->handle, view->handle);
 
