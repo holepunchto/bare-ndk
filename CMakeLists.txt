@@ -48,7 +48,7 @@ add_custom_command(
   POST_BUILD
   COMMAND
     ${d8}
-      --release
+      $<IF:$<CONFIG:Debug>,--debug,--release>
       --lib ${ANDROID_JAR}
       --output ${CMAKE_BINARY_DIR}
       ${CMAKE_BINARY_DIR}/classes.jar
