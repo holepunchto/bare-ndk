@@ -12,16 +12,12 @@ struct bare_ndk_web_view_t {
   java_global_ref_t<java_object_t<"android/webkit/WebView">> handle;
 
   js_env_t *env;
-  js_ref_t *ctx;
+
+  js_persistent_t<js_object_t> ctx;
 };
 
 static void
 bare_ndk_web_view__on_release(js_env_t *env, bare_ndk_web_view_t *web_view) {
-  int err;
-
-  err = js_delete_reference(env, web_view->ctx);
-  assert(err == 0);
-
   delete web_view;
 }
 
@@ -49,7 +45,7 @@ bare_ndk_web_view_init(js_env_t *env, js_callback_info_t *info) {
 
   web_view->handle = init(java_object_t<"android/content/Context">(activity->java, activity->handle));
 
-  err = js_create_reference(env, argv[1], 1, &web_view->ctx);
+  err = js_create_reference(env, js_object_t(argv[1]), web_view->ctx);
   assert(err == 0);
 
   js_external_t<bare_ndk_web_view_t> handle;
