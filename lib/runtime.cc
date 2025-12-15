@@ -2,7 +2,6 @@
 #include <bare.h>
 #include <jnitl.h>
 #include <js.h>
-#include <log.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
 #include <uv.h>
@@ -105,9 +104,6 @@ Java_to_holepunch_bare_Activity_setup(JNIEnv *env, jobject self, jobject state, 
   bare__native_activity.clazz = env->NewGlobalRef(self);
 
   bare__native_activity.assetManager = AAssetManager_fromJava(env, assets);
-
-  err = log_open("bare", 0);
-  assert(err == 0);
 
   uv_setup_args(0, nullptr);
 
