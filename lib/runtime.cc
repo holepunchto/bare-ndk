@@ -23,6 +23,7 @@ static bare_t *bare;
 static int bare__timer;
 
 static ANativeActivity bare__native_activity;
+static AAsset *bare__bundle = nullptr;
 
 ANativeActivity *bare_native_activity = &bare__native_activity;
 
@@ -125,14 +126,12 @@ Java_to_holepunch_bare_Activity_setup(JNIEnv *env, jobject self, jobject state, 
   err = bare_setup(bare__loop, bare__platform, nullptr, 0, nullptr, nullptr, &bare);
   assert(err == 0);
 
-  AAsset *asset = AAssetManager_open(bare__native_activity.assetManager, "app.bundle", AASSET_MODE_BUFFER);
+  bare__bundle = AAssetManager_open(bare__native_activity.assetManager, "app.bundle", AASSET_MODE_BUFFER);
 
-  uv_buf_t entry = uv_buf_init((char *) AAsset_getBuffer(asset), AAsset_getLength(asset));
+  uv_buf_t entry = uv_buf_init((char *) AAsset_getBuffer(bare__bundle), AAsset_getLength(bare__bundle));
 
   err = bare_load(bare, "bare:/app.bundle", &entry, nullptr);
   (void) err;
-
-  AAsset_close(asset);
 
   ALooper *looper = ALooper_forThread();
 
