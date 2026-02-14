@@ -168,6 +168,11 @@ Java_to_holepunch_bare_Activity_teardown(JNIEnv *env, jobject self) {
 
   err = bare_run(bare, UV_RUN_NOWAIT);
   assert(err >= 0);
+
+  err = bare_teardown(bare, UV_RUN_DEFAULT, nullptr);
+  assert(err >= 0);
+
+  AAsset_close(bare__bundle);
 }
 
 extern "C" void
