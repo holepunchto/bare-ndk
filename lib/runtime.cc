@@ -102,6 +102,8 @@ Java_to_holepunch_bare_Activity_setup(JNIEnv *env, jobject self, jobject state, 
 
   bare__native_activity.env = env;
 
+  jnitl_set_class_loader(env);
+
   bare__native_activity.clazz = env->NewGlobalRef(self);
 
   bare__native_activity.assetManager = AAssetManager_fromJava(env, assets);
