@@ -8,7 +8,7 @@ project(bare_android C CXX)
 fetch_package("github:holepunchto/bare@1.25.0")
 fetch_package("github:holepunchto/libpath")
 fetch_package("github:holepunchto/libjstl")
-fetch_package("github:holepunchto/libjnitl")
+fetch_package("github:holepunchto/libjnitl#classloader-fallback")
 
 find_package(Java)
 
@@ -31,6 +31,8 @@ target_link_libraries(
 )
 
 set(ANDROID_JAR ${ANDROID_HOME}/platforms/${ANDROID_PLATFORM}/android.jar)
+
+set(CMAKE_JAVA_COMPILE_FLAGS --release 17)
 
 add_jar(
   bare_runtime_classes
