@@ -6,6 +6,8 @@ find_package(cmake-android REQUIRED PATHS node_modules/cmake-android)
 
 project(bare_android C CXX)
 
+use_java()
+
 fetch_package("github:holepunchto/bare@1.25.0")
 fetch_package("github:holepunchto/libpath")
 fetch_package("github:holepunchto/libjstl")
