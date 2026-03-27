@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "brittle": "^3.18.0",
+    "cmake-android": "^0.1.2",
     "cmake-bare": "^1.6.5",
     "cmake-fetch": "^1.4.0",
     "prettier": "^3.4.1",
