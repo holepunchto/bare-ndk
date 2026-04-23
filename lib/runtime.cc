@@ -172,6 +172,14 @@ Java_to_holepunch_bare_Activity_teardown(JNIEnv *env, jobject self) {
   err = bare_teardown(bare, UV_RUN_DEFAULT, nullptr);
   assert(err >= 0);
 
+  err = uv_loop_close(bare__loop);
+  assert(err == 0);
+
+  err = uv_async_send(&bare__platform_shutdown);
+  assert(err == 0);
+
+  uv_thread_join(&bare__platform_thread);
+
   AAsset_close(bare__bundle);
 }
 
