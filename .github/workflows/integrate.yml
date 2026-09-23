@@ -20,20 +20,41 @@ jobs:
     steps:
       - uses: holepunchto/actions/node-base@v1
       - run: npm run lint
-  test:
+  prebuild:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             platform: android
             arch: x64
+          - os: ubuntu-24.04
+            platform: android
+            arch: ia32
+          - os: ubuntu-24.04
+            platform: android
+            arch: arm64
+          - os: ubuntu-24.04
+            platform: android
+            arch: arm
     runs-on: ${{ matrix.os }}
-    name: Test / ${{ matrix.platform }}-${{ matrix.arch }}
+    name: Build / ${{ matrix.platform }}-${{ matrix.arch }}
     steps:
       - uses: holepunchto/actions/bare-base@v1
       - uses: holepunchto/actions/compile-prebuilds@v1
         with:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}
-          flags: --debug -D ANDROID_PLATFORM=android-34 -D ANDROID_STL=c++_shared
+          flags: -D ANDROID_PLATFORM=android-34 -D ANDROID_STL=c++_shared
+          upload: true
+  test:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: android
+    runs-on: ${{ matrix.os }}
+    name: Test / ${{ matrix.platform }}
+    steps:
+      - uses: holepunchto/actions/bare-base@v1
+      - uses: holepunchto/actions/download-prebuilds@v1
       - run: npm test

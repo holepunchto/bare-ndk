@@ -7,6 +7,20 @@
     ".": "./index.js",
     "./runtime": "./runtime.js"
   },
+  "imports": {
+    "fs": {
+      "bare": "bare-fs",
+      "default": "fs"
+    },
+    "os": {
+      "bare": "bare-os",
+      "default": "os"
+    },
+    "path": {
+      "bare": "bare-path",
+      "default": "path"
+    }
+  },
   "files": [
     "index.js",
     "runtime.js",
@@ -15,6 +29,9 @@
     "CMakeLists.txt",
     "lib",
     "prebuilds"
+  ],
+  "workspaces": [
+    "test/fixtures/*"
   ],
   "addon": true,
   "scripts": {
@@ -39,6 +56,7 @@
     "bare-build": "^1.0.0"
   },
   "devDependencies": {
+    "bare-path": "^3.0.0",
     "brittle": "^3.18.0",
     "cmake-android": "^0.1.2",
     "cmake-bare": "^1.6.5",
