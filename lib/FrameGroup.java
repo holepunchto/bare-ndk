@@ -22,8 +22,7 @@ public final class FrameGroup extends ViewGroup {
   // transition at all.
   private int events;
 
-  public
-  FrameGroup(Context context) {
+  public FrameGroup(Context context) {
     super(context);
   }
 
@@ -97,8 +96,7 @@ public final class FrameGroup extends ViewGroup {
     public int x;
     public int y;
 
-    public
-    Frame() {
+    public Frame() {
       super(0, 0);
     }
   }
@@ -142,6 +140,14 @@ public final class FrameGroup extends ViewGroup {
       : MeasureSpec.getSize(spec);
   }
 
+  private static void
+  measure(View child, Frame frame) {
+    child.measure(
+      MeasureSpec.makeMeasureSpec(frame.width, MeasureSpec.EXACTLY),
+      MeasureSpec.makeMeasureSpec(frame.height, MeasureSpec.EXACTLY)
+    );
+  }
+
   @Override
   protected void
   onMeasure(int widthSpec, int heightSpec) {
@@ -153,10 +159,7 @@ public final class FrameGroup extends ViewGroup {
 
       Frame frame = (Frame) child.getLayoutParams();
 
-      child.measure(
-        MeasureSpec.makeMeasureSpec(frame.width, MeasureSpec.EXACTLY),
-        MeasureSpec.makeMeasureSpec(frame.height, MeasureSpec.EXACTLY)
-      );
+      measure(child, frame);
 
       width = Math.max(width, frame.x + frame.width);
       height = Math.max(height, frame.y + frame.height);
@@ -172,6 +175,10 @@ public final class FrameGroup extends ViewGroup {
       View child = getChildAt(i);
 
       Frame frame = (Frame) child.getLayoutParams();
+
+      if (child.getMeasuredWidth() != frame.width || child.getMeasuredHeight() != frame.height) {
+        measure(child, frame);
+      }
 
       child.layout(frame.x, frame.y, frame.x + frame.width, frame.y + frame.height);
     }
