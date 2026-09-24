@@ -9,6 +9,8 @@
 #include "lib/frame-group.h"
 #include "lib/resources.h"
 #include "lib/scroll-view.h"
+#include "lib/span.h"
+#include "lib/spannable-string-builder.h"
 #include "lib/text-view.h"
 #include "lib/text.h"
 #include "lib/typeface.h"
@@ -76,6 +78,16 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("frameGroupEventMask", bare_ndk_frame_group_event_mask)
 
   V("textMeasure", bare_ndk_text_measure)
+  V("textMeasureSpanned", bare_ndk_text_measure_spanned)
+
+  V("spannableStringBuilderInit", bare_ndk_spannable_string_builder_init)
+  V("spannableStringBuilderAppend", bare_ndk_spannable_string_builder_append)
+  V("spannableStringBuilderLength", bare_ndk_spannable_string_builder_length)
+  V("spannableStringBuilderSetSpan", bare_ndk_spannable_string_builder_set_span)
+
+  V("foregroundColorSpanInit", bare_ndk_foreground_color_span_init)
+  V("absoluteSizeSpanInit", bare_ndk_absolute_size_span_init)
+  V("typefaceSpanInit", bare_ndk_typeface_span_init)
 
   V("textViewInit", bare_ndk_text_view_init)
   V("textViewText", bare_ndk_text_view_text)
@@ -86,6 +98,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("textViewJustificationMode", bare_ndk_text_view_justification_mode)
 
   V("typefaceCreate", bare_ndk_typeface_create)
+  V("typefaceCreateFromTypeface", bare_ndk_typeface_create_from_typeface)
 
   V("gradientDrawableInit", bare_ndk_gradient_drawable_init)
   V("gradientDrawableColor", bare_ndk_gradient_drawable_color)

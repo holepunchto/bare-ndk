@@ -38,17 +38,29 @@ bare_ndk_text_view_text(js_env_t *env, js_callback_info_t *info) {
   err = bare_ndk__read_object(env, argv[0], "textView", &view);
   if (err < 0) return nullptr;
 
-  std::string text;
-  err = js_get_value(env, js_string_t(argv[1]), text);
-  assert(err == 0);
-
   JNIEnv *jni = bare_jni__env();
 
-  auto string = java_string_t(jni, text);
+  // `setText` takes a `CharSequence`, which a plain string is and a span
+  // builder is, so both arrive here.
+  bool is_string;
+  err = js_is_string(env, argv[1], &is_string);
+  assert(err == 0);
 
-  view.get_class().get_method<void(java_object_t<"java/lang/CharSequence">)>("setText")(
-    view, java_object_t<"java/lang/CharSequence">(jni, string)
-  );
+  auto setText = view.get_class().get_method<void(java_object_t<"java/lang/CharSequence">)>("setText");
+
+  if (is_string) {
+    std::string text;
+    err = js_get_value(env, js_string_t(argv[1]), text);
+    assert(err == 0);
+
+    setText(view, java_object_t<"java/lang/CharSequence">(jni, java_string_t(jni, text)));
+  } else {
+    java_object_t<"java/lang/CharSequence"> text;
+    err = bare_ndk__read_object(env, argv[1], "text", &text);
+    if (err < 0) return nullptr;
+
+    setText(view, text);
+  }
 
   return nullptr;
 }
