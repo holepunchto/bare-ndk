@@ -27,10 +27,19 @@ public final class Activity extends android.app.Activity {
     super.onCreate(state);
   }
 
+  // V8 cannot be initialised twice in one process, and disposing it does not
+  // make it possible, so the runtime outlives a configuration change and the
+  // process ends with anything else.
+  @Override
   protected void
   onDestroy() {
-    teardown();
     super.onDestroy();
+
+    if (isChangingConfigurations()) return;
+
+    teardown();
+
+    System.exit(0);
   }
 
   protected void

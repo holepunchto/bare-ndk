@@ -24,6 +24,7 @@ static int bare__timer;
 
 static ANativeActivity bare__native_activity;
 static AAsset *bare__bundle = nullptr;
+static bool bare__started = false;
 
 ANativeActivity *bare_native_activity = &bare__native_activity;
 
@@ -62,24 +63,40 @@ bare__on_platform_thread(void *data) {
 }
 
 static void
-bare__run(void) {
-  int err;
-
-  err = bare_run(bare, UV_RUN_NOWAIT);
-  assert(err >= 0);
-
+bare__arm(void) {
   int timeout = uv_backend_timeout(bare__loop);
-
-  if (timeout == 0) return bare__run();
 
   struct itimerspec spec = {0};
 
   if (timeout > 0) {
     spec.it_value.tv_sec = timeout / 1000;
     spec.it_value.tv_nsec = (timeout % 1000) * 1000000;
+  } else if (timeout == 0) {
+    // An all zero `it_value` disarms the timer rather than firing it.
+    spec.it_value.tv_nsec = 1;
   }
 
   timerfd_settime(bare__timer, 0, &spec, nullptr);
+}
+
+static void
+bare__run(void) {
+  int err;
+
+  err = bare_run(bare, UV_RUN_NOWAIT);
+  assert(err >= 0);
+
+  if (uv_backend_timeout(bare__loop) == 0) return bare__run();
+
+  bare__arm();
+}
+
+// The timer is armed only by the pump, so work scheduled from a Java callback
+// would sit until something else woke the loop. Android has no hook for the
+// moment before the looper sleeps, so an addon that enters JavaScript says so.
+extern "C" void
+bare_native_wake(void) {
+  bare__arm();
 }
 
 static int
@@ -99,6 +116,20 @@ bare__on_timeout(int fd, int events, void *data) {
 extern "C" void
 Java_to_holepunch_bare_Activity_setup(JNIEnv *env, jobject self, jobject state, jobject assets) {
   int err;
+
+  // Everything below runs once per process, so a replacement activity only has
+  // to be taken on. What the tree was attached to went with the old one.
+  if (bare__started) {
+    env->DeleteGlobalRef(bare__native_activity.clazz);
+
+    bare__native_activity.env = env;
+    bare__native_activity.clazz = env->NewGlobalRef(self);
+    bare__native_activity.assetManager = AAssetManager_fromJava(env, assets);
+
+    return;
+  }
+
+  bare__started = true;
 
   bare__native_activity.env = env;
 
@@ -181,6 +212,8 @@ Java_to_holepunch_bare_Activity_teardown(JNIEnv *env, jobject self) {
   uv_thread_join(&bare__platform_thread);
 
   AAsset_close(bare__bundle);
+
+  bare__started = false;
 }
 
 extern "C" void

@@ -6,76 +6,41 @@
 #include <js.h>
 #include <jstl.h>
 
+#include <string>
+
 #include "activity.h"
-
-struct bare_ndk_web_view_t {
-  java_global_ref_t<java_object_t<"android/webkit/WebView">> handle;
-
-  js_env_t *env;
-
-  js_persistent_t<js_object_t> ctx;
-};
-
-static void
-bare_ndk_web_view__on_release(js_env_t *env, bare_ndk_web_view_t *web_view) {
-  delete web_view;
-}
+#include "bridging.h"
 
 static js_value_t *
 bare_ndk_web_view_init(js_env_t *env, js_callback_info_t *info) {
-  int err;
+  JNIEnv *jni = bare_jni__env();
 
-  size_t argc = 2;
-  js_value_t *argv[2];
+  auto context = java_object_t<"android/content/Context">(jni, bare_native_activity->clazz);
 
-  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
-  assert(err == 0);
+  auto init = java_class_t<"android/webkit/WebView">(jni);
 
-  assert(argc == 2);
+  auto web_view = init(context);
 
-  bare_ndk_activity_t *activity;
-  err = js_get_value(env, js_external_t<bare_ndk_activity_t>(argv[0]), activity);
-  assert(err == 0);
-
-  auto web_view = new bare_ndk_web_view_t();
-
-  web_view->env = env;
-
-  auto init = java_class_t<"android/webkit/WebView">(activity->java);
-
-  web_view->handle = init(java_object_t<"android/content/Context">(activity->java, activity->handle));
-
-  err = js_create_reference(env, js_object_t(argv[1]), web_view->ctx);
-  assert(err == 0);
-
-  js_external_t<bare_ndk_web_view_t> handle;
-  err = js_create_external<bare_ndk_web_view__on_release>(env, web_view, handle);
-  assert(err == 0);
-
-  return static_cast<js_value_t *>(handle);
+  return bare_ndk__tag(env, web_view);
 }
 
 static js_value_t *
 bare_ndk_web_view_debugging_enabled(js_env_t *env, js_callback_info_t *info) {
   int err;
 
-  size_t argc = 2;
-  js_value_t *argv[2];
+  size_t argc = 1;
+  js_value_t *argv[1];
 
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
-
-  bare_ndk_activity_t *activity;
-  err = js_get_value(env, js_external_t<bare_ndk_activity_t>(argv[0]), activity);
-  assert(err == 0);
+  assert(argc == 1);
 
   bool enabled;
-  err = js_get_value(env, js_boolean_t(argv[1]), enabled);
+  err = js_get_value(env, js_boolean_t(argv[0]), enabled);
   assert(err == 0);
 
-  auto init = java_class_t<"android/webkit/WebView">(activity->java);
+  auto init = java_class_t<"android/webkit/WebView">(bare_jni__env());
 
   auto set_debugging_enabled = init.get_static_method<void(bool)>("setWebContentsDebuggingEnabled");
 
@@ -85,34 +50,24 @@ bare_ndk_web_view_debugging_enabled(js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_ndk_web_view_javascript_enabled(js_env_t *env, js_callback_info_t *info) {
+bare_ndk_web_view_settings(js_env_t *env, js_callback_info_t *info) {
   int err;
 
-  size_t argc = 2;
-  js_value_t *argv[2];
+  size_t argc = 1;
+  js_value_t *argv[1];
 
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1);
 
-  bare_ndk_web_view_t *web_view;
-  err = js_get_value(env, js_external_t<bare_ndk_web_view_t>(argv[0]), web_view);
-  assert(err == 0);
+  java_object_t<"android/webkit/WebView"> web_view;
+  err = bare_ndk__read_object(env, argv[0], "webView", &web_view);
+  if (err < 0) return nullptr;
 
-  bool enabled;
-  err = js_get_value(env, js_boolean_t(argv[1]), enabled);
-  assert(err == 0);
+  auto get_settings = web_view.get_class().get_method<java_object_t<"android/webkit/WebSettings">()>("getSettings");
 
-  auto get_settings = web_view->handle.get_class().get_method<java_object_t<"android/webkit/WebSettings">()>("getSettings");
-
-  auto settings = get_settings(web_view->handle);
-
-  auto set_javascript_enabled = settings.get_class().get_method<void(bool)>("setJavaScriptEnabled");
-
-  set_javascript_enabled(settings, enabled);
-
-  return nullptr;
+  return bare_ndk__tag(env, get_settings(web_view));
 }
 
 static js_value_t *
@@ -127,17 +82,17 @@ bare_ndk_web_view_load_url(js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 2);
 
-  bare_ndk_web_view_t *web_view;
-  err = js_get_value(env, js_external_t<bare_ndk_web_view_t>(argv[0]), web_view);
-  assert(err == 0);
+  java_object_t<"android/webkit/WebView"> web_view;
+  err = bare_ndk__read_object(env, argv[0], "webView", &web_view);
+  if (err < 0) return nullptr;
 
   std::string url;
   err = js_get_value(env, js_string_t(argv[1]), url);
   assert(err == 0);
 
-  auto load_url = web_view->handle.get_class().get_method<void(std::string)>("loadUrl");
+  auto load_url = web_view.get_class().get_method<void(std::string)>("loadUrl");
 
-  load_url(web_view->handle, url);
+  load_url(web_view, url);
 
   return nullptr;
 }
@@ -146,17 +101,17 @@ static js_value_t *
 bare_ndk_web_view_load_data(js_env_t *env, js_callback_info_t *info) {
   int err;
 
-  size_t argc = 6;
-  js_value_t *argv[6];
+  size_t argc = 4;
+  js_value_t *argv[4];
 
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 6);
+  assert(argc == 4);
 
-  bare_ndk_web_view_t *web_view;
-  err = js_get_value(env, js_external_t<bare_ndk_web_view_t>(argv[0]), web_view);
-  assert(err == 0);
+  java_object_t<"android/webkit/WebView"> web_view;
+  err = bare_ndk__read_object(env, argv[0], "webView", &web_view);
+  if (err < 0) return nullptr;
 
   std::string data;
   err = js_get_value(env, js_string_t(argv[1]), data);
@@ -170,17 +125,52 @@ bare_ndk_web_view_load_data(js_env_t *env, js_callback_info_t *info) {
   err = js_get_value(env, js_string_t(argv[3]), encoding);
   assert(err == 0);
 
+  auto load_data = web_view.get_class().get_method<void(std::string, std::string, std::string)>("loadData");
+
+  load_data(web_view, data, mime_type, encoding);
+
+  return nullptr;
+}
+
+static js_value_t *
+bare_ndk_web_view_load_data_with_base_url(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 6;
+  js_value_t *argv[6];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 6);
+
+  java_object_t<"android/webkit/WebView"> web_view;
+  err = bare_ndk__read_object(env, argv[0], "webView", &web_view);
+  if (err < 0) return nullptr;
+
   std::string base_url;
-  err = js_get_value(env, js_string_t(argv[4]), base_url);
+  err = js_get_value(env, js_string_t(argv[1]), base_url);
+  assert(err == 0);
+
+  std::string data;
+  err = js_get_value(env, js_string_t(argv[2]), data);
+  assert(err == 0);
+
+  std::string mime_type;
+  err = js_get_value(env, js_string_t(argv[3]), mime_type);
+  assert(err == 0);
+
+  std::string encoding;
+  err = js_get_value(env, js_string_t(argv[4]), encoding);
   assert(err == 0);
 
   std::string history_url;
   err = js_get_value(env, js_string_t(argv[5]), history_url);
   assert(err == 0);
 
-  auto load_data = web_view->handle.get_class().get_method<void(std::string, std::string, std::string, std::string, std::string)>("loadDataWithBaseURL");
+  auto load_data = web_view.get_class().get_method<void(std::string, std::string, std::string, std::string, std::string)>("loadDataWithBaseURL");
 
-  load_data(web_view->handle, base_url, data, mime_type, encoding, history_url);
+  load_data(web_view, base_url, data, mime_type, encoding, history_url);
 
   return nullptr;
 }

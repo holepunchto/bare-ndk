@@ -5,6 +5,7 @@
   "exports": {
     "./package": "./package.json",
     ".": "./index.js",
+    "./text": "./lib/text.js",
     "./runtime": "./runtime.js"
   },
   "files": [
@@ -33,6 +34,7 @@
   },
   "homepage": "https://github.com/holepunchto/bare-ndk#readme",
   "dependencies": {
+    "bare-jni-registry": "^0.1.0",
     "require-asset": "^1.1.0"
   },
   "peerDependencies": {
