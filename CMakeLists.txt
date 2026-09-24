@@ -51,6 +51,8 @@ add_dex(
   bare_ndk_classes
   SOURCES
     lib/FrameGroup.java
+    lib/HorizontalScrollGroup.java
+    lib/ScrollGroup.java
   INCLUDE_JARS
     ${android_jar}
 )

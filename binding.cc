@@ -8,6 +8,7 @@
 #include "lib/drawable.h"
 #include "lib/frame-group.h"
 #include "lib/resources.h"
+#include "lib/scroll-view.h"
 #include "lib/text-view.h"
 #include "lib/text.h"
 #include "lib/typeface.h"
@@ -27,6 +28,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   bare_ndk__js = env;
 
   bare_ndk_frame_group_register(bare_native_activity->env);
+  bare_ndk_scroll_view_register(bare_native_activity->env);
 
 #define V(name, fn) \
   { \
@@ -61,6 +63,11 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
 
   V("viewGroupAddView", bare_ndk_view_group_add_view)
   V("viewGroupRemoveView", bare_ndk_view_group_remove_view)
+
+  V("scrollViewInit", bare_ndk_scroll_view_init)
+  V("scrollViewEventMask", bare_ndk_scroll_view_event_mask)
+  V("viewScrollPosition", bare_ndk_view_scroll_position)
+  V("horizontalScrollViewInit", bare_ndk_horizontal_scroll_view_init)
 
   V("frameGroupInit", bare_ndk_frame_group_init)
   V("frameGroupSetFrame", bare_ndk_frame_group_set_frame)
@@ -105,6 +112,8 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   }
 
   V("FRAME_GROUP_EVENT_RESIZE", bare_ndk_frame_group_event_resize)
+  V("SCROLL_VIEW_EVENT_SCROLL", bare_ndk_scroll_view_event_scroll)
+
   V("FRAME_GROUP_EVENT_DOWN", bare_ndk_frame_group_event_down)
   V("FRAME_GROUP_EVENT_MOVE", bare_ndk_frame_group_event_move)
   V("FRAME_GROUP_EVENT_UP", bare_ndk_frame_group_event_up)

@@ -133,9 +133,21 @@ public final class FrameGroup extends ViewGroup {
     return new Frame();
   }
 
+  // A scroll view measures its child against no bound at all, and a group that
+  // knows where it put everything knows what that comes to.
+  private static int
+  resolve(int spec, int content) {
+    return MeasureSpec.getMode(spec) == MeasureSpec.UNSPECIFIED
+      ? content
+      : MeasureSpec.getSize(spec);
+  }
+
   @Override
   protected void
   onMeasure(int widthSpec, int heightSpec) {
+    int width = 0;
+    int height = 0;
+
     for (int i = 0; i < getChildCount(); i++) {
       View child = getChildAt(i);
 
@@ -145,9 +157,12 @@ public final class FrameGroup extends ViewGroup {
         MeasureSpec.makeMeasureSpec(frame.width, MeasureSpec.EXACTLY),
         MeasureSpec.makeMeasureSpec(frame.height, MeasureSpec.EXACTLY)
       );
+
+      width = Math.max(width, frame.x + frame.width);
+      height = Math.max(height, frame.y + frame.height);
     }
 
-    setMeasuredDimension(MeasureSpec.getSize(widthSpec), MeasureSpec.getSize(heightSpec));
+    setMeasuredDimension(resolve(widthSpec, width), resolve(heightSpec, height));
   }
 
   @Override
