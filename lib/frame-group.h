@@ -1,0 +1,168 @@
+#pragma once
+
+#include <assert.h>
+#include <bare.h>
+#include <jnitl.h>
+#include <js.h>
+#include <jstl.h>
+
+#include "activity.h"
+#include "bridging.h"
+
+// Matches `FrameGroup`, which is where the mask is checked.
+enum {
+  bare_ndk_frame_group_event_size_changed = 1 << 0,
+  bare_ndk_frame_group_event_insets_changed = 1 << 5,
+  bare_ndk_frame_group_event_configuration_changed = 1 << 6,
+  bare_ndk_frame_group_event_down = 1 << 1,
+  bare_ndk_frame_group_event_move = 1 << 2,
+  bare_ndk_frame_group_event_up = 1 << 3,
+  bare_ndk_frame_group_event_cancel = 1 << 4,
+};
+
+// Called by Android, so it is registered on the Java class instead of exported.
+// The registry finds the wrapper for the receiver.
+static void
+bare_ndk_frame_group__on_resize(java_env_t env, java_object_t<"to/holepunch/bare/ndk/FrameGroup"> receiver, int32_t width, int32_t height) {
+  bare_ndk__emit(receiver, "sizeChanged", 2, (const double[]) {static_cast<double>(width), static_cast<double>(height)});
+}
+
+static void
+bare_ndk_frame_group__on_touch(java_env_t env, java_object_t<"to/holepunch/bare/ndk/FrameGroup"> receiver, int32_t event, float x, float y, int32_t pointer) {
+  const char *name;
+
+  switch (event) {
+  case bare_ndk_frame_group_event_down:
+    name = "down";
+    break;
+  case bare_ndk_frame_group_event_move:
+    name = "move";
+    break;
+  case bare_ndk_frame_group_event_up:
+    name = "up";
+    break;
+  case bare_ndk_frame_group_event_cancel:
+    name = "cancel";
+    break;
+  default:
+    return;
+  }
+
+  bare_ndk__emit(receiver, name, 3, (const double[]) {x, y, static_cast<double>(pointer)});
+}
+
+static void
+bare_ndk_frame_group__on_insets(java_env_t env, java_object_t<"to/holepunch/bare/ndk/FrameGroup"> receiver) {
+  bare_ndk__emit(receiver, "insetsChanged", 0, nullptr);
+}
+
+static void
+bare_ndk_frame_group__on_configuration(java_env_t env, java_object_t<"to/holepunch/bare/ndk/FrameGroup"> receiver) {
+  bare_ndk__emit(receiver, "configurationChanged", 0, nullptr);
+}
+
+static void
+bare_ndk_frame_group_register(JNIEnv *jni) {
+  java_class_t<"to/holepunch/bare/ndk/FrameGroup">(jni, bare_ndk__class<"to/holepunch/bare/ndk/FrameGroup">(jni))
+    .register_natives(
+      java_native_method_t<bare_ndk_frame_group__on_resize>("onResize"),
+      java_native_method_t<bare_ndk_frame_group__on_touch>("onTouch"),
+      java_native_method_t<bare_ndk_frame_group__on_insets>("onInsets"),
+      java_native_method_t<bare_ndk_frame_group__on_configuration>("onConfiguration")
+    );
+}
+
+static js_value_t *
+bare_ndk_frame_group_init(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_ndk_state_t *state;
+  err = js_get_callback_info(env, info, NULL, NULL, NULL, (void **) &state);
+  assert(err == 0);
+
+  JNIEnv *jni = bare_jni_env();
+
+  auto context = java_object_t<"android/content/Context">(jni, bare_native_activity->clazz);
+
+  auto init = java_class_t<"to/holepunch/bare/ndk/FrameGroup">(jni, bare_ndk__class<"to/holepunch/bare/ndk/FrameGroup">(jni));
+
+  auto group = init(context);
+
+  return bare_ndk__tag(env, state, group);
+}
+
+static js_value_t *
+bare_ndk_frame_group_set_frame(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_ndk_state_t *state;
+  err = js_get_callback_info(env, info, NULL, NULL, NULL, (void **) &state);
+  assert(err == 0);
+
+  size_t argc = 6;
+  js_value_t *argv[6];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 6);
+
+  java_object_t<"to/holepunch/bare/ndk/FrameGroup"> group;
+  err = bare_ndk__read_object(env, state, argv[0], "group", &group);
+  if (err < 0) return nullptr;
+
+  java_object_t<"android/view/View"> child;
+  err = bare_ndk__read_object(env, state, argv[1], "child", &child);
+  if (err < 0) return nullptr;
+
+  int32_t x, y, width, height;
+
+  err = js_get_value(env, js_number_t(argv[2]), x);
+  assert(err == 0);
+
+  err = js_get_value(env, js_number_t(argv[3]), y);
+  assert(err == 0);
+
+  err = js_get_value(env, js_number_t(argv[4]), width);
+  assert(err == 0);
+
+  err = js_get_value(env, js_number_t(argv[5]), height);
+  assert(err == 0);
+
+  auto set_frame = group.get_class().get_method<void(java_object_t<"android/view/View">, int32_t, int32_t, int32_t, int32_t)>("setFrame");
+
+  set_frame(group, child, x, y, width, height);
+
+  return nullptr;
+}
+
+static js_value_t *
+bare_ndk_frame_group_event_mask(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_ndk_state_t *state;
+  err = js_get_callback_info(env, info, NULL, NULL, NULL, (void **) &state);
+  assert(err == 0);
+
+  size_t argc = 2;
+  js_value_t *argv[2];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 2);
+
+  java_object_t<"to/holepunch/bare/ndk/FrameGroup"> group;
+  err = bare_ndk__read_object(env, state, argv[0], "group", &group);
+  if (err < 0) return nullptr;
+
+  int32_t mask;
+  err = js_get_value(env, js_number_t(argv[1]), mask);
+  assert(err == 0);
+
+  auto set_events = group.get_class().get_method<void(int32_t)>("setEvents");
+
+  set_events(group, mask);
+
+  return nullptr;
+}
