@@ -11,7 +11,7 @@
 
 // Mirrors `FrameGroup`, which is where the mask is checked.
 enum {
-  bare_ndk_frame_group_event_resize = 1 << 0,
+  bare_ndk_frame_group_event_size_changed = 1 << 0,
   bare_ndk_frame_group_event_down = 1 << 1,
   bare_ndk_frame_group_event_move = 1 << 2,
   bare_ndk_frame_group_event_up = 1 << 3,
@@ -23,7 +23,7 @@ enum {
 // the wrapper listening for it.
 static void
 bare_ndk_frame_group__on_resize(java_env_t env, java_object_t<"to/holepunch/bare/ndk/FrameGroup"> receiver, int32_t width, int32_t height) {
-  bare_ndk__emit(receiver, "resize", 2, (const double[]) {static_cast<double>(width), static_cast<double>(height)});
+  bare_ndk__emit(receiver, "sizeChanged", 2, (const double[]) {static_cast<double>(width), static_cast<double>(height)});
 }
 
 static void

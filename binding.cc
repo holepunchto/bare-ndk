@@ -66,7 +66,9 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
 
   V("scrollViewInit", bare_ndk_scroll_view_init)
   V("scrollViewEventMask", bare_ndk_scroll_view_event_mask)
-  V("viewScrollPosition", bare_ndk_view_scroll_position)
+  V("viewScrollX", bare_ndk_view_scroll_x)
+  V("viewScrollY", bare_ndk_view_scroll_y)
+  V("viewScrollTo", bare_ndk_view_scroll_to)
   V("horizontalScrollViewInit", bare_ndk_horizontal_scroll_view_init)
 
   V("frameGroupInit", bare_ndk_frame_group_init)
@@ -111,8 +113,8 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
     assert(err == 0); \
   }
 
-  V("FRAME_GROUP_EVENT_RESIZE", bare_ndk_frame_group_event_resize)
-  V("SCROLL_VIEW_EVENT_SCROLL", bare_ndk_scroll_view_event_scroll)
+  V("FRAME_GROUP_EVENT_SIZE_CHANGED", bare_ndk_frame_group_event_size_changed)
+  V("SCROLL_VIEW_EVENT_SCROLL_CHANGED", bare_ndk_scroll_view_event_scroll_changed)
 
   V("FRAME_GROUP_EVENT_DOWN", bare_ndk_frame_group_event_down)
   V("FRAME_GROUP_EVENT_MOVE", bare_ndk_frame_group_event_move)

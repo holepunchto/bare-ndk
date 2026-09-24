@@ -6,7 +6,7 @@ import android.widget.HorizontalScrollView;
 // Android tells whoever subclasses the view that it scrolled, which is the
 // same reason the Apple platforms subclass theirs.
 public final class HorizontalScrollGroup extends HorizontalScrollView {
-  public static final int EVENT_SCROLL = 1;
+  public static final int EVENT_SCROLL_CHANGED = 1;
 
   // Checked here rather than in native code, so an unobserved view costs no
   // transition at all.
@@ -30,6 +30,6 @@ public final class HorizontalScrollGroup extends HorizontalScrollView {
   onScrollChanged(int x, int y, int oldX, int oldY) {
     super.onScrollChanged(x, y, oldX, oldY);
 
-    if ((events & EVENT_SCROLL) != 0) onScroll(x, y);
+    if ((events & EVENT_SCROLL_CHANGED) != 0) onScroll(x, y);
   }
 }

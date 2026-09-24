@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 // Every frame has already been computed, so this group replays what it was
 // given and measures a child to the size it was told rather than asking.
 public final class FrameGroup extends ViewGroup {
-  public static final int EVENT_RESIZE = 1;
+  public static final int EVENT_SIZE_CHANGED = 1;
 
   // The actions a `MotionEvent` reports, which is all this group forwards.
   public static final int EVENT_DOWN = 2;
@@ -90,7 +90,7 @@ public final class FrameGroup extends ViewGroup {
   onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
     super.onSizeChanged(width, height, oldWidth, oldHeight);
 
-    if ((events & EVENT_RESIZE) != 0) onResize(width, height);
+    if ((events & EVENT_SIZE_CHANGED) != 0) onResize(width, height);
   }
 
   public static final class Frame extends ViewGroup.LayoutParams {

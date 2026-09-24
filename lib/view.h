@@ -36,7 +36,53 @@ bare_ndk_view_background_color(js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_ndk_view_scroll_position(js_env_t *env, js_callback_info_t *info) {
+bare_ndk_view_scroll_x(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  java_object_t<"android/view/View"> view;
+  err = bare_ndk__read_object(env, argv[0], "view", &view);
+  if (err < 0) return nullptr;
+
+  js_value_t *result;
+  err = js_create_int32(env, view.get_class().get_method<int32_t()>("getScrollX")(view), &result);
+  assert(err == 0);
+
+  return result;
+}
+
+static js_value_t *
+bare_ndk_view_scroll_y(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  java_object_t<"android/view/View"> view;
+  err = bare_ndk__read_object(env, argv[0], "view", &view);
+  if (err < 0) return nullptr;
+
+  js_value_t *result;
+  err = js_create_int32(env, view.get_class().get_method<int32_t()>("getScrollY")(view), &result);
+  assert(err == 0);
+
+  return result;
+}
+
+static js_value_t *
+bare_ndk_view_scroll_to(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 3;
@@ -45,30 +91,11 @@ bare_ndk_view_scroll_position(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 1 || argc == 3);
+  assert(argc == 3);
 
   java_object_t<"android/view/View"> view;
   err = bare_ndk__read_object(env, argv[0], "view", &view);
   if (err < 0) return nullptr;
-
-  auto type = view.get_class();
-
-  if (argc == 1) {
-    js_value_t *result;
-    err = js_create_object(env, &result);
-    assert(err == 0);
-
-    for (auto [name, getter] : {std::pair {"x", "getScrollX"}, std::pair {"y", "getScrollY"}}) {
-      js_value_t *value;
-      err = js_create_int32(env, type.get_method<int32_t()>(getter)(view), &value);
-      assert(err == 0);
-
-      err = js_set_named_property(env, result, name, value);
-      assert(err == 0);
-    }
-
-    return result;
-  }
 
   int32_t x, y;
 
@@ -78,7 +105,7 @@ bare_ndk_view_scroll_position(js_env_t *env, js_callback_info_t *info) {
   err = js_get_value(env, js_number_t(argv[2]), y);
   assert(err == 0);
 
-  type.get_method<void(int32_t, int32_t)>("scrollTo")(view, x, y);
+  view.get_class().get_method<void(int32_t, int32_t)>("scrollTo")(view, x, y);
 
   return nullptr;
 }

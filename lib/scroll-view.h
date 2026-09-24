@@ -15,12 +15,12 @@ enum {
 
 static void
 bare_ndk_scroll_group__on_scroll(java_env_t env, java_object_t<"to/holepunch/bare/ndk/ScrollGroup"> receiver, int32_t x, int32_t y) {
-  bare_ndk__emit(receiver, "scroll", 2, (const double[]) {static_cast<double>(x), static_cast<double>(y)});
+  bare_ndk__emit(receiver, "scrollChanged", 2, (const double[]) {static_cast<double>(x), static_cast<double>(y)});
 }
 
 static void
 bare_ndk_horizontal_scroll_group__on_scroll(java_env_t env, java_object_t<"to/holepunch/bare/ndk/HorizontalScrollGroup"> receiver, int32_t x, int32_t y) {
-  bare_ndk__emit(receiver, "scroll", 2, (const double[]) {static_cast<double>(x), static_cast<double>(y)});
+  bare_ndk__emit(receiver, "scrollChanged", 2, (const double[]) {static_cast<double>(x), static_cast<double>(y)});
 }
 
 static void
