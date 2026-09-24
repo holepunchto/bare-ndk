@@ -35,18 +35,30 @@ bare_ndk_spannable_string_builder_append(js_env_t *env, js_callback_info_t *info
   err = bare_ndk__read_object(env, argv[0], "builder", &builder);
   if (err < 0) return nullptr;
 
-  std::string text;
-  err = js_get_value(env, js_string_t(argv[1]), text);
-  assert(err == 0);
-
   JNIEnv *jni = bare_jni__env();
 
-  auto string = java_string_t(jni, text);
+  // `append` takes a `CharSequence`, which a plain string is and another span
+  // builder is, so both arrive here.
+  bool is_string;
+  err = js_is_string(env, argv[1], &is_string);
+  assert(err == 0);
 
-  builder.get_class()
-    .get_method<java_object_t<"android/text/SpannableStringBuilder">(java_object_t<"java/lang/CharSequence">)>("append")(
-      builder, java_object_t<"java/lang/CharSequence">(jni, string)
-    );
+  auto append = builder.get_class()
+    .get_method<java_object_t<"android/text/SpannableStringBuilder">(java_object_t<"java/lang/CharSequence">)>("append");
+
+  if (is_string) {
+    std::string text;
+    err = js_get_value(env, js_string_t(argv[1]), text);
+    assert(err == 0);
+
+    append(builder, java_object_t<"java/lang/CharSequence">(jni, java_string_t(jni, text)));
+  } else {
+    java_object_t<"java/lang/CharSequence"> text;
+    err = bare_ndk__read_object(env, argv[1], "text", &text);
+    if (err < 0) return nullptr;
+
+    append(builder, text);
+  }
 
   return nullptr;
 }
