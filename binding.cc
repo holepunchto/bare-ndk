@@ -104,7 +104,11 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
     assert(err == 0); \
   }
 
-  V("FRAME_GROUP_EVENT_RESIZE", 1)
+  V("FRAME_GROUP_EVENT_RESIZE", bare_ndk_frame_group_event_resize)
+  V("FRAME_GROUP_EVENT_DOWN", bare_ndk_frame_group_event_down)
+  V("FRAME_GROUP_EVENT_MOVE", bare_ndk_frame_group_event_move)
+  V("FRAME_GROUP_EVENT_UP", bare_ndk_frame_group_event_up)
+  V("FRAME_GROUP_EVENT_CANCEL", bare_ndk_frame_group_event_cancel)
 
   V("WINDOW_INSETS_TYPE_SYSTEM_BARS", bare_ndk__window_insets_type("systemBars"))
   V("WINDOW_INSETS_TYPE_DISPLAY_CUTOUT", bare_ndk__window_insets_type("displayCutout"))

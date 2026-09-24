@@ -9,6 +9,15 @@
 #include "activity.h"
 #include "bridging.h"
 
+// Mirrors `FrameGroup`, which is where the mask is checked.
+enum {
+  bare_ndk_frame_group_event_resize = 1 << 0,
+  bare_ndk_frame_group_event_down = 1 << 1,
+  bare_ndk_frame_group_event_move = 1 << 2,
+  bare_ndk_frame_group_event_up = 1 << 3,
+  bare_ndk_frame_group_event_cancel = 1 << 4,
+};
+
 // Called by Android rather than by the runtime, so it is registered onto the
 // Java class instead of exported. The registry resolves the receiver back to
 // the wrapper listening for it.
@@ -18,9 +27,36 @@ bare_ndk_frame_group__on_resize(java_env_t env, java_object_t<"to/holepunch/bare
 }
 
 static void
+bare_ndk_frame_group__on_touch(java_env_t env, java_object_t<"to/holepunch/bare/ndk/FrameGroup"> receiver, int32_t event, float x, float y, int32_t pointer) {
+  const char *name;
+
+  switch (event) {
+  case bare_ndk_frame_group_event_down:
+    name = "down";
+    break;
+  case bare_ndk_frame_group_event_move:
+    name = "move";
+    break;
+  case bare_ndk_frame_group_event_up:
+    name = "up";
+    break;
+  case bare_ndk_frame_group_event_cancel:
+    name = "cancel";
+    break;
+  default:
+    return;
+  }
+
+  bare_ndk__emit(receiver, name, 3, (const double[]) {x, y, static_cast<double>(pointer)});
+}
+
+static void
 bare_ndk_frame_group_register(JNIEnv *jni) {
   java_class_t<"to/holepunch/bare/ndk/FrameGroup">(jni, bare_ndk__class<"to/holepunch/bare/ndk/FrameGroup">(jni))
-    .register_natives(java_native_method_t<bare_ndk_frame_group__on_resize>("onResize"));
+    .register_natives(
+      java_native_method_t<bare_ndk_frame_group__on_resize>("onResize"),
+      java_native_method_t<bare_ndk_frame_group__on_touch>("onTouch")
+    );
 }
 
 static js_value_t *

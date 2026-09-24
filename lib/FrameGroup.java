@@ -1,6 +1,7 @@
 package to.holepunch.bare.ndk;
 
 import android.content.Context;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -8,6 +9,14 @@ import android.view.ViewGroup;
 // given and measures a child to the size it was told rather than asking.
 public final class FrameGroup extends ViewGroup {
   public static final int EVENT_RESIZE = 1;
+
+  // The actions a `MotionEvent` reports, which is all this group forwards.
+  public static final int EVENT_DOWN = 2;
+  public static final int EVENT_MOVE = 4;
+  public static final int EVENT_UP = 8;
+  public static final int EVENT_CANCEL = 16;
+
+  private static final int EVENT_TOUCH = EVENT_DOWN | EVENT_MOVE | EVENT_UP | EVENT_CANCEL;
 
   // Checked here rather than in native code, so an unobserved group costs no
   // transition at all.
@@ -25,6 +34,56 @@ public final class FrameGroup extends ViewGroup {
 
   private native void
   onResize(int width, int height);
+
+  private native void
+  onTouch(int event, float x, float y, int pointer);
+
+  // Android stops delivering a gesture to a view that let the first event go,
+  // so anything listening for any part of one has to claim the press even when
+  // it only wants what comes after.
+  @Override
+  public boolean
+  onTouchEvent(MotionEvent motion) {
+    if ((events & EVENT_TOUCH) == 0) return super.onTouchEvent(motion);
+
+    int action = motion.getActionMasked();
+    int event;
+
+    switch (action) {
+    case MotionEvent.ACTION_DOWN:
+    case MotionEvent.ACTION_POINTER_DOWN:
+      event = EVENT_DOWN;
+      break;
+    case MotionEvent.ACTION_MOVE:
+      event = EVENT_MOVE;
+      break;
+    case MotionEvent.ACTION_UP:
+    case MotionEvent.ACTION_POINTER_UP:
+      event = EVENT_UP;
+      break;
+    case MotionEvent.ACTION_CANCEL:
+      event = EVENT_CANCEL;
+      break;
+    default:
+      return super.onTouchEvent(motion);
+    }
+
+    if ((events & event) == 0) return true;
+
+    // A move carries every pointer at once, where the rest name the one that
+    // changed, and every other platform reports one pointer at a time.
+    if (event == EVENT_MOVE) {
+      for (int i = 0; i < motion.getPointerCount(); i++) {
+        onTouch(event, motion.getX(i), motion.getY(i), motion.getPointerId(i));
+      }
+    } else {
+      int i = motion.getActionIndex();
+
+      onTouch(event, motion.getX(i), motion.getY(i), motion.getPointerId(i));
+    }
+
+    return true;
+  }
 
   @Override
   protected void
