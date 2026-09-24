@@ -10,7 +10,7 @@
 #include "bridging.h"
 
 enum {
-  bare_ndk_scroll_view_event_scroll = 1 << 0,
+  bare_ndk_scroll_view_event_scroll_changed = 1 << 0,
 };
 
 static void
