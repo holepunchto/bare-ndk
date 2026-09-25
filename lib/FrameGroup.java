@@ -2,6 +2,7 @@ package to.holepunch.bare.ndk;
 
 import android.content.Context;
 import android.view.MotionEvent;
+import android.view.WindowInsets;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,6 +12,8 @@ public final class FrameGroup extends ViewGroup {
   public static final int EVENT_SIZE_CHANGED = 1;
 
   // The actions a `MotionEvent` reports, which is all this group forwards.
+  public static final int EVENT_INSETS_CHANGED = 32;
+
   public static final int EVENT_DOWN = 2;
   public static final int EVENT_MOVE = 4;
   public static final int EVENT_UP = 8;
@@ -40,6 +43,19 @@ public final class FrameGroup extends ViewGroup {
   // Android stops delivering a gesture to a view that let the first event go,
   // so anything listening for any part of one has to claim the press even when
   // it only wants what comes after.
+  private native void
+  onInsets();
+
+  // The keyboard does not resize the window on every configuration, so what
+  // it covers arrives here rather than through a size change.
+  @Override
+  public WindowInsets
+  onApplyWindowInsets(WindowInsets insets) {
+    if ((events & EVENT_INSETS_CHANGED) != 0) onInsets();
+
+    return super.onApplyWindowInsets(insets);
+  }
+
   @Override
   public boolean
   onTouchEvent(MotionEvent motion) {

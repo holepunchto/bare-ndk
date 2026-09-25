@@ -7,6 +7,7 @@
 #include "lib/bitmap.h"
 #include "lib/bridging.h"
 #include "lib/drawable.h"
+#include "lib/edit-field.h"
 #include "lib/frame-group.h"
 #include "lib/image-view.h"
 #include "lib/resources.h"
@@ -33,6 +34,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
 
   bare_ndk_frame_group_register(bare_native_activity->env);
   bare_ndk_scroll_view_register(bare_native_activity->env);
+  bare_ndk_edit_field_register(bare_native_activity->env);
 
 #define V(name, fn) \
   { \
@@ -60,6 +62,8 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("viewHeight", bare_ndk_view_height)
   V("viewRootWindowInsets", bare_ndk_view_root_window_insets)
   V("viewAlpha", bare_ndk_view_alpha)
+  V("viewEnabled", bare_ndk_view_enabled)
+  V("viewSetPadding", bare_ndk_view_set_padding)
   V("viewClipToOutline", bare_ndk_view_clip_to_outline)
   V("viewBackground", bare_ndk_view_background)
 
@@ -100,6 +104,14 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("imageViewSetImageBitmap", bare_ndk_image_view_set_image_bitmap)
   V("imageViewScaleType", bare_ndk_image_view_scale_type)
 
+  V("editFieldInit", bare_ndk_edit_field_init)
+  V("editFieldEventMask", bare_ndk_edit_field_event_mask)
+  V("editFieldHint", bare_ndk_edit_field_hint)
+  V("editFieldInputType", bare_ndk_edit_field_input_type)
+  V("editFieldImeOptions", bare_ndk_edit_field_ime_options)
+  V("editFieldSelection", bare_ndk_edit_field_selection)
+  V("editFieldFocus", bare_ndk_edit_field_focus)
+
   V("textViewInit", bare_ndk_text_view_init)
   V("textViewText", bare_ndk_text_view_text)
   V("textViewTextSize", bare_ndk_text_view_text_size)
@@ -137,7 +149,14 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
     assert(err == 0); \
   }
 
+  V("EDIT_FIELD_EVENT_CHANGED", bare_ndk_edit_field_event_changed)
+  V("EDIT_FIELD_EVENT_REPLACING", bare_ndk_edit_field_event_replacing)
+  V("EDIT_FIELD_EVENT_SELECTION_CHANGED", bare_ndk_edit_field_event_selection_changed)
+  V("EDIT_FIELD_EVENT_FOCUS_CHANGED", bare_ndk_edit_field_event_focus_changed)
+  V("EDIT_FIELD_EVENT_ACTION", bare_ndk_edit_field_event_action)
+
   V("FRAME_GROUP_EVENT_SIZE_CHANGED", bare_ndk_frame_group_event_size_changed)
+  V("FRAME_GROUP_EVENT_INSETS_CHANGED", bare_ndk_frame_group_event_insets_changed)
   V("SCROLL_VIEW_EVENT_SCROLL_CHANGED", bare_ndk_scroll_view_event_scroll_changed)
 
   V("FRAME_GROUP_EVENT_DOWN", bare_ndk_frame_group_event_down)

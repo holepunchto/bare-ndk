@@ -12,6 +12,7 @@
 // Mirrors `FrameGroup`, which is where the mask is checked.
 enum {
   bare_ndk_frame_group_event_size_changed = 1 << 0,
+  bare_ndk_frame_group_event_insets_changed = 1 << 5,
   bare_ndk_frame_group_event_down = 1 << 1,
   bare_ndk_frame_group_event_move = 1 << 2,
   bare_ndk_frame_group_event_up = 1 << 3,
@@ -51,11 +52,17 @@ bare_ndk_frame_group__on_touch(java_env_t env, java_object_t<"to/holepunch/bare/
 }
 
 static void
+bare_ndk_frame_group__on_insets(java_env_t env, java_object_t<"to/holepunch/bare/ndk/FrameGroup"> receiver) {
+  bare_ndk__emit(receiver, "insetsChanged", 0, nullptr);
+}
+
+static void
 bare_ndk_frame_group_register(JNIEnv *jni) {
   java_class_t<"to/holepunch/bare/ndk/FrameGroup">(jni, bare_ndk__class<"to/holepunch/bare/ndk/FrameGroup">(jni))
     .register_natives(
       java_native_method_t<bare_ndk_frame_group__on_resize>("onResize"),
-      java_native_method_t<bare_ndk_frame_group__on_touch>("onTouch")
+      java_native_method_t<bare_ndk_frame_group__on_touch>("onTouch"),
+      java_native_method_t<bare_ndk_frame_group__on_insets>("onInsets")
     );
 }
 

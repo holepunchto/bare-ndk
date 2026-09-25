@@ -4,6 +4,7 @@
 #include <jnitl.h>
 #include <js.h>
 #include <stdint.h>
+#include <string>
 #include <utf.h>
 
 #include "registry.h"
@@ -59,6 +60,49 @@ bare_ndk__tag(js_env_t *env, const java_object_t<N> &object) {
   assert(err == 0);
 
   return result;
+}
+
+// A range and the string about to replace it, which is what a text watcher
+// reports about an edit as it happens.
+static void
+bare_ndk__emit_replacement(jobject object, const char *event, const std::string &text, int32_t start, int32_t end) {
+  int err;
+
+  js_env_t *env = bare_ndk__js;
+
+  js_handle_scope_t *scope;
+  err = js_open_handle_scope(env, &scope);
+  assert(err == 0);
+
+  js_value_t *wrapper = bare_jni__lookup(env, object);
+
+  if (wrapper) {
+    js_value_t *emit;
+    err = js_get_named_property(env, wrapper, "emit", &emit);
+    assert(err == 0);
+
+    js_value_t *argv[4];
+
+    err = js_create_string_utf8(env, reinterpret_cast<const utf8_t *>(event), (size_t) -1, &argv[0]);
+    assert(err == 0);
+
+    err = js_create_string_utf8(env, reinterpret_cast<const utf8_t *>(text.c_str()), text.size(), &argv[1]);
+    assert(err == 0);
+
+    err = js_create_int32(env, start, &argv[2]);
+    assert(err == 0);
+
+    err = js_create_int32(env, end, &argv[3]);
+    assert(err == 0);
+
+    err = js_call_function(env, wrapper, emit, 4, argv, nullptr);
+    assert(err == 0 || err == js_pending_exception);
+  }
+
+  err = js_close_handle_scope(env, scope);
+  assert(err == 0);
+
+  bare_native_wake();
 }
 
 static void

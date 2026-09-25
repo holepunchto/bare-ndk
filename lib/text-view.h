@@ -32,13 +32,27 @@ bare_ndk_text_view_text(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1 || argc == 2);
 
   java_object_t<"android/widget/TextView"> view;
   err = bare_ndk__read_object(env, argv[0], "textView", &view);
   if (err < 0) return nullptr;
 
   JNIEnv *jni = bare_jni__env();
+
+  // What a text view holds is a `CharSequence`, and what a caller wants back
+  // is the text of it.
+  if (argc == 1) {
+    auto text = view.get_class().get_method<java_object_t<"java/lang/CharSequence">()>("getText")(view);
+
+    auto string = text.get_class().get_method<std::string()>("toString")(text);
+
+    js_string_t result;
+    err = js_create_string(env, string, result);
+    assert(err == 0);
+
+    return static_cast<js_value_t *>(result);
+  }
 
   // `setText` takes a `CharSequence`, which a plain string is and a span
   // builder is, so both arrive here.

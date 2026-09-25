@@ -50,6 +50,7 @@ add_dex(
 add_dex(
   bare_ndk_classes
   SOURCES
+    lib/EditField.java
     lib/FrameGroup.java
     lib/HorizontalScrollGroup.java
     lib/ScrollGroup.java
