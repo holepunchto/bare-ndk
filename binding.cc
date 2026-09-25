@@ -4,9 +4,11 @@
 #include <utf.h>
 
 #include "lib/activity.h"
+#include "lib/bitmap.h"
 #include "lib/bridging.h"
 #include "lib/drawable.h"
 #include "lib/frame-group.h"
+#include "lib/image-view.h"
 #include "lib/resources.h"
 #include "lib/scroll-view.h"
 #include "lib/span.h"
@@ -88,6 +90,15 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("foregroundColorSpanInit", bare_ndk_foreground_color_span_init)
   V("absoluteSizeSpanInit", bare_ndk_absolute_size_span_init)
   V("typefaceSpanInit", bare_ndk_typeface_span_init)
+
+  V("bitmapFactoryDecodeFile", bare_ndk_bitmap_factory_decode_file)
+  V("bitmapWidth", bare_ndk_bitmap_width)
+  V("bitmapHeight", bare_ndk_bitmap_height)
+  V("bitmapDensity", bare_ndk_bitmap_density)
+
+  V("imageViewInit", bare_ndk_image_view_init)
+  V("imageViewSetImageBitmap", bare_ndk_image_view_set_image_bitmap)
+  V("imageViewScaleType", bare_ndk_image_view_scale_type)
 
   V("textViewInit", bare_ndk_text_view_init)
   V("textViewText", bare_ndk_text_view_text)
