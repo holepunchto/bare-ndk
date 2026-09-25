@@ -1,6 +1,7 @@
 package to.holepunch.bare.ndk;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -10,6 +11,7 @@ import android.widget.Switch;
 // caller would have to hold.
 public final class Toggle extends Switch implements CompoundButton.OnCheckedChangeListener {
   public static final int EVENT_CHECKED = 1;
+  public static final int EVENT_FOCUS_CHANGED = 2;
 
   private int events;
 
@@ -28,9 +30,20 @@ public final class Toggle extends Switch implements CompoundButton.OnCheckedChan
   private native void
   onChecked();
 
+  private native void
+  onFocus(boolean focused);
+
   @Override
   public void
   onCheckedChanged(CompoundButton button, boolean checked) {
     if ((events & EVENT_CHECKED) != 0) onChecked();
+  }
+
+  @Override
+  protected void
+  onFocusChanged(boolean focused, int direction, Rect previous) {
+    super.onFocusChanged(focused, direction, previous);
+
+    if ((events & EVENT_FOCUS_CHANGED) != 0) onFocus(focused);
   }
 }

@@ -11,6 +11,7 @@
 
 enum {
   bare_ndk_toggle_event_checked = 1 << 0,
+  bare_ndk_toggle_event_focus_changed = 1 << 1,
 };
 
 static void
@@ -19,10 +20,16 @@ bare_ndk_toggle__on_checked(java_env_t env, java_object_t<"to/holepunch/bare/ndk
 }
 
 static void
+bare_ndk_toggle__on_focus(java_env_t env, java_object_t<"to/holepunch/bare/ndk/Toggle"> receiver, bool focused) {
+  bare_ndk__emit(receiver, "focusChanged", 1, (const double[]) {focused ? 1.0 : 0.0});
+}
+
+static void
 bare_ndk_toggle_register(JNIEnv *jni) {
   java_class_t<"to/holepunch/bare/ndk/Toggle">(jni, bare_ndk__class<"to/holepunch/bare/ndk/Toggle">(jni))
     .register_natives(
-      java_native_method_t<bare_ndk_toggle__on_checked>("onChecked")
+      java_native_method_t<bare_ndk_toggle__on_checked>("onChecked"),
+      java_native_method_t<bare_ndk_toggle__on_focus>("onFocus")
     );
 }
 

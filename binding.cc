@@ -166,6 +166,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   }
 
   V("TOGGLE_EVENT_CHECKED", bare_ndk_toggle_event_checked)
+  V("TOGGLE_EVENT_FOCUS_CHANGED", bare_ndk_toggle_event_focus_changed)
 
   V("EDIT_FIELD_EVENT_CHANGED", bare_ndk_edit_field_event_changed)
   V("EDIT_FIELD_EVENT_REPLACING", bare_ndk_edit_field_event_replacing)
