@@ -160,6 +160,61 @@ bare_ndk_view_height(js_env_t *env, js_callback_info_t *info) {
   return result;
 }
 
+// Invisible rather than gone, because the box a view was given is the
+// layout's and a gone view is not laid out at all.
+// The highlight Android draws over a view that has the focus and says nothing
+// about focus itself, which is every view whose background carries no focused
+// state. A background this layer painted carries none.
+static js_value_t *
+bare_ndk_view_default_focus_highlight(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 2;
+  js_value_t *argv[2];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 2);
+
+  java_object_t<"android/view/View"> view;
+  err = bare_ndk__read_object(env, argv[0], "view", &view);
+  if (err < 0) return nullptr;
+
+  bool enabled;
+  err = js_get_value(env, js_boolean_t(argv[1]), enabled);
+  assert(err == 0);
+
+  view.get_class().get_method<void(bool)>("setDefaultFocusHighlightEnabled")(view, enabled);
+
+  return nullptr;
+}
+
+static js_value_t *
+bare_ndk_view_visible(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 2;
+  js_value_t *argv[2];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 2);
+
+  java_object_t<"android/view/View"> view;
+  err = bare_ndk__read_object(env, argv[0], "view", &view);
+  if (err < 0) return nullptr;
+
+  bool visible;
+  err = js_get_value(env, js_boolean_t(argv[1]), visible);
+  assert(err == 0);
+
+  view.get_class().get_method<void(int32_t)>("setVisibility")(view, visible ? 0 : 4);
+
+  return nullptr;
+}
+
 static js_value_t *
 bare_ndk_view_alpha(js_env_t *env, js_callback_info_t *info) {
   int err;

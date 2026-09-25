@@ -66,3 +66,47 @@ bare_ndk_activity_resources(js_env_t *env, js_callback_info_t *info) {
 
   return bare_ndk__tag(env, get_resources(activity));
 }
+
+// A colour the theme decides rather than the caller, which is how a widget
+// draws itself in the accent the person running it chose.
+static js_value_t *
+bare_ndk_activity_theme_color(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  JNIEnv *jni = bare_jni__env();
+
+  std::string name;
+  err = js_get_value(env, js_string_t(argv[0]), name);
+  assert(err == 0);
+
+  // The attribute's own number, read off the platform's `R` rather than
+  // written down here, where a wrong one would quietly resolve to some other
+  // attribute entirely.
+  auto attributes = java_class_t<"android/R$attr">(jni, bare_ndk__class<"android/R$attr">(jni));
+
+  auto attribute = attributes.get_static_field<int32_t>(name).get();
+
+  auto context = java_object_t<"android/content/Context">(jni, bare_native_activity->clazz);
+
+  auto theme = context.get_class().get_method<java_object_t<"android/content/res/Resources$Theme">()>("getTheme")(context);
+
+  auto init = java_class_t<"android/util/TypedValue">(jni, bare_ndk__class<"android/util/TypedValue">(jni));
+
+  auto value = init();
+
+  theme.get_class().get_method<bool(int32_t, java_object_t<"android/util/TypedValue">, bool)>("resolveAttribute")(theme, attribute, value, true);
+
+  js_value_t *result;
+  err = js_create_int32(env, value.get(value.get_class().get_field<int32_t>("data")), &result);
+  assert(err == 0);
+
+  return result;
+}

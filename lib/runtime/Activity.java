@@ -2,6 +2,7 @@ package to.holepunch.bare;
 
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.view.Window;
 
 public final class Activity extends android.app.Activity {
   static {
@@ -23,6 +24,12 @@ public final class Activity extends android.app.Activity {
   @Override
   protected void
   onCreate(Bundle state) {
+    // The tree drawn here is the whole of the window, so the title the theme
+    // would put above it is decor rather than anything a layout can account
+    // for: no inset describes it and nothing below can lay itself out under
+    // it.
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
+
     setup(state, getAssets());
     super.onCreate(state);
   }

@@ -54,6 +54,7 @@ add_dex(
     lib/FrameGroup.java
     lib/HorizontalScrollGroup.java
     lib/ScrollGroup.java
+    lib/Toggle.java
   INCLUDE_JARS
     ${android_jar}
 )

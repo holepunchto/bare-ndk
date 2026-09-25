@@ -8,6 +8,8 @@
 #include "lib/bridging.h"
 #include "lib/drawable.h"
 #include "lib/edit-field.h"
+#include "lib/progress-bar.h"
+#include "lib/toggle.h"
 #include "lib/frame-group.h"
 #include "lib/image-view.h"
 #include "lib/resources.h"
@@ -35,6 +37,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   bare_ndk_frame_group_register(bare_native_activity->env);
   bare_ndk_scroll_view_register(bare_native_activity->env);
   bare_ndk_edit_field_register(bare_native_activity->env);
+  bare_ndk_toggle_register(bare_native_activity->env);
 
 #define V(name, fn) \
   { \
@@ -61,6 +64,8 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("viewWidth", bare_ndk_view_width)
   V("viewHeight", bare_ndk_view_height)
   V("viewRootWindowInsets", bare_ndk_view_root_window_insets)
+  V("viewDefaultFocusHighlight", bare_ndk_view_default_focus_highlight)
+  V("viewVisible", bare_ndk_view_visible)
   V("viewAlpha", bare_ndk_view_alpha)
   V("viewEnabled", bare_ndk_view_enabled)
   V("viewSetPadding", bare_ndk_view_set_padding)
@@ -103,6 +108,17 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("imageViewInit", bare_ndk_image_view_init)
   V("imageViewSetImageBitmap", bare_ndk_image_view_set_image_bitmap)
   V("imageViewScaleType", bare_ndk_image_view_scale_type)
+
+  V("activityThemeColor", bare_ndk_activity_theme_color)
+
+  V("progressBarInit", bare_ndk_progress_bar_init)
+  V("progressBarIndeterminate", bare_ndk_progress_bar_indeterminate)
+  V("progressBarIndeterminateTint", bare_ndk_progress_bar_indeterminate_tint)
+
+  V("toggleInit", bare_ndk_toggle_init)
+  V("toggleEventMask", bare_ndk_toggle_event_mask)
+  V("toggleChecked", bare_ndk_toggle_checked)
+  V("toggleNaturalSize", bare_ndk_toggle_natural_size)
 
   V("editFieldInit", bare_ndk_edit_field_init)
   V("editFieldEventMask", bare_ndk_edit_field_event_mask)
@@ -148,6 +164,8 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
     err = js_set_named_property(env, exports, name, val); \
     assert(err == 0); \
   }
+
+  V("TOGGLE_EVENT_CHECKED", bare_ndk_toggle_event_checked)
 
   V("EDIT_FIELD_EVENT_CHANGED", bare_ndk_edit_field_event_changed)
   V("EDIT_FIELD_EVENT_REPLACING", bare_ndk_edit_field_event_replacing)
