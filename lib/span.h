@@ -8,6 +8,45 @@
 
 #include "bridging.h"
 
+// Android spells the two lines as two spans of its own, which need nothing
+// said to them beyond existing.
+#define BARE_NDK_MARKER_SPAN(name, class) \
+  static js_value_t * \
+  bare_ndk_##name##_span_init(js_env_t *env, js_callback_info_t *info) { \
+    JNIEnv *jni = bare_jni__env(); \
+\
+    auto init = java_class_t<class>(jni, bare_ndk__class<class>(jni)); \
+\
+    return bare_ndk__tag(env, init()); \
+  }
+
+BARE_NDK_MARKER_SPAN(underline, "android/text/style/UnderlineSpan")
+BARE_NDK_MARKER_SPAN(strikethrough, "android/text/style/StrikethroughSpan")
+#undef BARE_NDK_MARKER_SPAN
+
+static js_value_t *
+bare_ndk_letter_spacing_span_init(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  double spacing;
+  err = js_get_value(env, js_number_t(argv[0]), spacing);
+  assert(err == 0);
+
+  JNIEnv *jni = bare_jni__env();
+
+  auto init = java_class_t<"to/holepunch/bare/ndk/LetterSpacingSpan">(jni, bare_ndk__class<"to/holepunch/bare/ndk/LetterSpacingSpan">(jni));
+
+  return bare_ndk__tag(env, init(static_cast<float>(spacing)));
+}
+
 static js_value_t *
 bare_ndk_foreground_color_span_init(js_env_t *env, js_callback_info_t *info) {
   int err;

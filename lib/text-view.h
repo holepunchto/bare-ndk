@@ -79,6 +79,69 @@ bare_ndk_text_view_text(js_env_t *env, js_callback_info_t *info) {
   return nullptr;
 }
 
+// The other end of the same thing: a multiplier of one and nothing added is
+// the font's own spacing, which is how the property is put back.
+static js_value_t *
+bare_ndk_text_view_line_spacing(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 3;
+  js_value_t *argv[3];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 3);
+
+  java_object_t<"android/widget/TextView"> view;
+  err = bare_ndk__read_object(env, argv[0], "textView", &view);
+  if (err < 0) return nullptr;
+
+  double add, multiplier;
+
+  err = js_get_value(env, js_number_t(argv[1]), add);
+  assert(err == 0);
+
+  err = js_get_value(env, js_number_t(argv[2]), multiplier);
+  assert(err == 0);
+
+  view.get_class().get_method<void(float, float)>("setLineSpacing")(
+    view, static_cast<float>(add), static_cast<float>(multiplier)
+  );
+
+  return nullptr;
+}
+
+// Android asks for a line height in pixels and has no way to be told to go
+// back to the font's own, so putting the property back is a line of exactly
+// the height the paint draws, which is what it would have used.
+static js_value_t *
+bare_ndk_text_view_line_height(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 2;
+  js_value_t *argv[2];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 2);
+
+  java_object_t<"android/widget/TextView"> view;
+  err = bare_ndk__read_object(env, argv[0], "textView", &view);
+  if (err < 0) return nullptr;
+
+  auto type = view.get_class();
+
+  double height;
+  err = js_get_value(env, js_number_t(argv[1]), height);
+  assert(err == 0);
+
+  type.get_method<void(int32_t)>("setLineHeight")(view, static_cast<int32_t>(height));
+
+  return nullptr;
+}
+
 static js_value_t *
 bare_ndk_text_view_text_size(js_env_t *env, js_callback_info_t *info) {
   int err;

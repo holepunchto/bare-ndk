@@ -52,6 +52,7 @@ add_dex(
   SOURCES
     lib/EditField.java
     lib/FrameGroup.java
+    lib/LetterSpacingSpan.java
     lib/HorizontalScrollGroup.java
     lib/ScrollGroup.java
     lib/Toggle.java

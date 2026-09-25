@@ -96,6 +96,9 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("spannableStringBuilderLength", bare_ndk_spannable_string_builder_length)
   V("spannableStringBuilderSetSpan", bare_ndk_spannable_string_builder_set_span)
 
+  V("letterSpacingSpanInit", bare_ndk_letter_spacing_span_init)
+  V("underlineSpanInit", bare_ndk_underline_span_init)
+  V("strikethroughSpanInit", bare_ndk_strikethrough_span_init)
   V("foregroundColorSpanInit", bare_ndk_foreground_color_span_init)
   V("absoluteSizeSpanInit", bare_ndk_absolute_size_span_init)
   V("typefaceSpanInit", bare_ndk_typeface_span_init)
@@ -131,6 +134,8 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("textViewInit", bare_ndk_text_view_init)
   V("textViewText", bare_ndk_text_view_text)
   V("textViewTextSize", bare_ndk_text_view_text_size)
+  V("textViewLineHeight", bare_ndk_text_view_line_height)
+  V("textViewLineSpacing", bare_ndk_text_view_line_spacing)
   V("textViewTextColor", bare_ndk_text_view_text_color)
   V("textViewTypeface", bare_ndk_text_view_typeface)
   V("textViewGravity", bare_ndk_text_view_gravity)
