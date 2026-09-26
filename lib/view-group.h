@@ -65,3 +65,28 @@ bare_ndk_view_group_remove_view(js_env_t *env, js_callback_info_t *info) {
 
   return nullptr;
 }
+
+static js_value_t *
+bare_ndk_view_group_clip_children(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 2;
+  js_value_t *argv[2];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 2);
+
+  java_object_t<"android/view/ViewGroup"> group;
+  err = bare_ndk__read_object(env, argv[0], "group", &group);
+  if (err < 0) return nullptr;
+
+  bool clip;
+  err = js_get_value(env, js_boolean_t(argv[1]), clip);
+  assert(err == 0);
+
+  group.get_class().get_method<void(bool)>("setClipChildren")(group, clip);
+
+  return nullptr;
+}

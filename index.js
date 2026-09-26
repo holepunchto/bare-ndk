@@ -27,5 +27,3 @@ exports.ViewGroup = require('./lib/view-group')
 exports.WebSettings = require('./lib/web-settings')
 exports.WebView = require('./lib/web-view')
 exports.WindowInsets = require('./lib/window-insets')
-
-require('./lib/handle').expose(Object.values(exports))

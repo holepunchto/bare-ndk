@@ -393,3 +393,45 @@ bare_ndk_view_set_padding(js_env_t *env, js_callback_info_t *info) {
 
   return nullptr;
 }
+
+// A `View` composes its own transform out of these rather than taking a
+// matrix, because a matrix handed to one through `setAnimationMatrix` is
+// drawn through and never hit tested: the view would be touched where it is
+// not drawn.
+#define V(name, method) \
+  static js_value_t * \
+  bare_ndk_view_##name(js_env_t *env, js_callback_info_t *info) { \
+    int err; \
+\
+    size_t argc = 2; \
+    js_value_t *argv[2]; \
+\
+    err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr); \
+    assert(err == 0); \
+\
+    assert(argc == 2); \
+\
+    java_object_t<"android/view/View"> view; \
+    err = bare_ndk__read_object(env, argv[0], "view", &view); \
+    if (err < 0) return nullptr; \
+\
+    double value; \
+    err = js_get_value(env, js_number_t(argv[1]), value); \
+    assert(err == 0); \
+\
+    view.get_class().get_method<void(float)>(method)(view, static_cast<float>(value)); \
+\
+    return nullptr; \
+  }
+
+V(translation_x, "setTranslationX")
+V(translation_y, "setTranslationY")
+V(scale_x, "setScaleX")
+V(scale_y, "setScaleY")
+V(rotation, "setRotation")
+V(rotation_x, "setRotationX")
+V(rotation_y, "setRotationY")
+V(pivot_x, "setPivotX")
+V(pivot_y, "setPivotY")
+V(camera_distance, "setCameraDistance")
+#undef V
