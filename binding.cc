@@ -164,6 +164,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("gradientDrawableInit", bare_ndk_gradient_drawable_init)
   V("gradientDrawableColor", bare_ndk_gradient_drawable_color)
   V("gradientDrawableCornerRadius", bare_ndk_gradient_drawable_corner_radius)
+  V("gradientDrawableCornerRadii", bare_ndk_gradient_drawable_corner_radii)
   V("gradientDrawableStroke", bare_ndk_gradient_drawable_stroke)
 
   V("webViewInit", bare_ndk_web_view_init)
