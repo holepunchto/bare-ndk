@@ -146,6 +146,8 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("textViewText", bare_ndk_text_view_text)
   V("textViewTextSize", bare_ndk_text_view_text_size)
   V("textViewLineHeight", bare_ndk_text_view_line_height)
+  V("textViewMaxLines", bare_ndk_text_view_max_lines)
+  V("textViewEllipsize", bare_ndk_text_view_ellipsize)
   V("textViewLineSpacing", bare_ndk_text_view_line_spacing)
   V("textViewTextColor", bare_ndk_text_view_text_color)
   V("textViewTypeface", bare_ndk_text_view_typeface)
