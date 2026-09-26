@@ -69,6 +69,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("viewAlpha", bare_ndk_view_alpha)
   V("viewTranslationX", bare_ndk_view_translation_x)
   V("viewTranslationY", bare_ndk_view_translation_y)
+  V("viewTranslationZ", bare_ndk_view_translation_z)
   V("viewScaleX", bare_ndk_view_scale_x)
   V("viewScaleY", bare_ndk_view_scale_y)
   V("viewRotation", bare_ndk_view_rotation)

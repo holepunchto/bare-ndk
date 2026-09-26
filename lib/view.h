@@ -426,6 +426,7 @@ bare_ndk_view_set_padding(js_env_t *env, js_callback_info_t *info) {
 
 V(translation_x, "setTranslationX")
 V(translation_y, "setTranslationY")
+V(translation_z, "setTranslationZ")
 V(scale_x, "setScaleX")
 V(scale_y, "setScaleY")
 V(rotation, "setRotation")
