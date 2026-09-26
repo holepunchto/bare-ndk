@@ -164,7 +164,7 @@ bare_ndk_view_height(js_env_t *env, js_callback_info_t *info) {
 // layout's and a gone view is not laid out at all.
 // The highlight Android draws over a view that has the focus and says nothing
 // about focus itself, which is every view whose background carries no focused
-// state. A background this layer painted carries none.
+// state.
 static js_value_t *
 bare_ndk_view_default_focus_highlight(js_env_t *env, js_callback_info_t *info) {
   int err;
@@ -434,4 +434,37 @@ V(rotation_y, "setRotationY")
 V(pivot_x, "setPivotX")
 V(pivot_y, "setPivotY")
 V(camera_distance, "setCameraDistance")
+V(elevation, "setElevation")
+#undef V
+
+// The colours of the two lights a raised `View` casts its shadow by. Android
+// packs a colour into the 32 bits of a signed integer, as a background does.
+#define V(name, method) \
+  static js_value_t * \
+  bare_ndk_view_##name(js_env_t *env, js_callback_info_t *info) { \
+    int err; \
+\
+    size_t argc = 2; \
+    js_value_t *argv[2]; \
+\
+    err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr); \
+    assert(err == 0); \
+\
+    assert(argc == 2); \
+\
+    java_object_t<"android/view/View"> view; \
+    err = bare_ndk__read_object(env, argv[0], "view", &view); \
+    if (err < 0) return nullptr; \
+\
+    int32_t value; \
+    err = js_get_value(env, js_number_t(argv[1]), value); \
+    assert(err == 0); \
+\
+    view.get_class().get_method<void(int32_t)>(method)(view, value); \
+\
+    return nullptr; \
+  }
+
+V(outline_ambient_shadow_color, "setOutlineAmbientShadowColor")
+V(outline_spot_shadow_color, "setOutlineSpotShadowColor")
 #undef V
