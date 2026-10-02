@@ -1,0 +1,162 @@
+#pragma once
+
+#include <assert.h>
+#include <bare.h>
+#include <jnitl.h>
+#include <js.h>
+#include <jstl.h>
+
+#include "activity.h"
+#include "bridging.h"
+
+enum {
+  bare_ndk_toggle_event_checked = 1 << 0,
+  bare_ndk_toggle_event_focus_changed = 1 << 1,
+};
+
+static void
+bare_ndk_toggle__on_checked(java_env_t env, java_object_t<"to/holepunch/bare/ndk/Toggle"> receiver) {
+  bare_ndk__emit(receiver, "checked", 0, nullptr);
+}
+
+static void
+bare_ndk_toggle__on_focus(java_env_t env, java_object_t<"to/holepunch/bare/ndk/Toggle"> receiver, bool focused) {
+  bare_ndk__emit(receiver, "focusChanged", 1, (const double[]) {focused ? 1.0 : 0.0});
+}
+
+static void
+bare_ndk_toggle_register(JNIEnv *jni) {
+  java_class_t<"to/holepunch/bare/ndk/Toggle">(jni, bare_ndk__class<"to/holepunch/bare/ndk/Toggle">(jni))
+    .register_natives(
+      java_native_method_t<bare_ndk_toggle__on_checked>("onChecked"),
+      java_native_method_t<bare_ndk_toggle__on_focus>("onFocus")
+    );
+}
+
+static js_value_t *
+bare_ndk_toggle_init(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_ndk_state_t *state;
+  err = js_get_callback_info(env, info, NULL, NULL, NULL, (void **) &state);
+  assert(err == 0);
+
+  JNIEnv *jni = bare_jni_env();
+
+  auto context = java_object_t<"android/content/Context">(jni, bare_native_activity->clazz);
+
+  auto init = java_class_t<"to/holepunch/bare/ndk/Toggle">(jni, bare_ndk__class<"to/holepunch/bare/ndk/Toggle">(jni));
+
+  return bare_ndk__tag(env, state, init(context));
+}
+
+static js_value_t *
+bare_ndk_toggle_event_mask(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_ndk_state_t *state;
+  err = js_get_callback_info(env, info, NULL, NULL, NULL, (void **) &state);
+  assert(err == 0);
+
+  size_t argc = 2;
+  js_value_t *argv[2];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 2);
+
+  java_object_t<"to/holepunch/bare/ndk/Toggle"> toggle;
+  err = bare_ndk__read_object(env, state, argv[0], "toggle", &toggle);
+  if (err < 0) return nullptr;
+
+  int32_t mask;
+  err = js_get_value(env, js_number_t(argv[1]), mask);
+  assert(err == 0);
+
+  toggle.get_class().get_method<void(int32_t)>("setEvents")(toggle, mask);
+
+  return nullptr;
+}
+
+static js_value_t *
+bare_ndk_toggle_checked(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_ndk_state_t *state;
+  err = js_get_callback_info(env, info, NULL, NULL, NULL, (void **) &state);
+  assert(err == 0);
+
+  size_t argc = 2;
+  js_value_t *argv[2];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 1 || argc == 2);
+
+  java_object_t<"to/holepunch/bare/ndk/Toggle"> toggle;
+  err = bare_ndk__read_object(env, state, argv[0], "toggle", &toggle);
+  if (err < 0) return nullptr;
+
+  auto type = toggle.get_class();
+
+  js_value_t *result = nullptr;
+
+  if (argc == 1) {
+    err = js_get_boolean(env, type.get_method<bool()>("isChecked")(toggle), &result);
+    assert(err == 0);
+  } else {
+    bool checked;
+    err = js_get_value(env, js_boolean_t(argv[1]), checked);
+    assert(err == 0);
+
+    type.get_method<void(bool)>("setChecked")(toggle, checked);
+  }
+
+  return result;
+}
+
+static js_value_t *
+bare_ndk_toggle_natural_size(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_ndk_state_t *state;
+  err = js_get_callback_info(env, info, NULL, NULL, NULL, (void **) &state);
+  assert(err == 0);
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  java_object_t<"to/holepunch/bare/ndk/Toggle"> toggle;
+  err = bare_ndk__read_object(env, state, argv[0], "toggle", &toggle);
+  if (err < 0) return nullptr;
+
+  auto type = toggle.get_class();
+
+  // An unspecified measure spec asks the widget for the size it wants.
+  type.get_method<void(int32_t, int32_t)>("measure")(toggle, 0, 0);
+
+  js_value_t *result;
+  err = js_create_object(env, &result);
+  assert(err == 0);
+
+#define V(name, getter) \
+  { \
+    js_value_t *value; \
+    err = js_create_int32(env, type.get_method<int32_t()>(getter)(toggle), &value); \
+    assert(err == 0); \
+    err = js_set_named_property(env, result, name, value); \
+    assert(err == 0); \
+  }
+  V("width", "getMeasuredWidth")
+  V("height", "getMeasuredHeight")
+#undef V
+
+  return result;
+}

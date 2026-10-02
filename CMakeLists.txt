@@ -8,7 +8,7 @@ project(bare_android C CXX)
 
 use_java()
 
-fetch_package("github:holepunchto/bare@1.29.4")
+fetch_package("github:holepunchto/bare@1.33.5")
 fetch_package("github:holepunchto/libpath")
 fetch_package("github:holepunchto/libjstl")
 fetch_package("github:holepunchto/libjnitl")
@@ -19,6 +19,12 @@ target_sources(
   ${bare_ndk}
   PRIVATE
     binding.cc
+)
+
+target_include_directories(
+  ${bare_ndk}
+  PRIVATE
+    node_modules/bare-jni-registry/lib
 )
 
 target_link_libraries(
@@ -37,6 +43,20 @@ add_dex(
   bare_runtime_classes
   SOURCES
     lib/runtime/Activity.java
+  INCLUDE_JARS
+    ${android_jar}
+)
+
+add_dex(
+  bare_ndk_classes
+  SOURCES
+    lib/Dialog.java
+    lib/EditField.java
+    lib/FrameGroup.java
+    lib/LetterSpacingSpan.java
+    lib/HorizontalScrollGroup.java
+    lib/ScrollGroup.java
+    lib/Toggle.java
   INCLUDE_JARS
     ${android_jar}
 )
@@ -87,4 +107,11 @@ install(
     ${android_stl}
     $<TARGET_PROPERTY:bare_runtime_classes,DEX_FILE>
   DESTINATION ${target}/bare
+)
+
+install(
+  FILES
+    $<TARGET_PROPERTY:bare_ndk_classes,JAR_FILE>
+    $<TARGET_PROPERTY:bare_ndk_classes,DEX_FILE>
+  DESTINATION ${target}/${name}
 )

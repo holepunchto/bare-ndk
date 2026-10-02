@@ -1,0 +1,9 @@
+# https://github.com/holepunchto/lunte/issues/17
+lib/clip-data.d.ts
+lib/dialog.d.ts
+lib/edit-field.d.ts
+lib/frame-group.d.ts
+lib/horizontal-scroll-view.d.ts
+lib/resources.d.ts
+lib/scroll-view.d.ts
+lib/toggle.d.ts

@@ -4,11 +4,19 @@
   "description": "Android NDK bindings and runtime for Bare",
   "exports": {
     "./package": "./package.json",
-    ".": "./index.js",
-    "./runtime": "./runtime.js"
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./runtime": "./runtime.js",
+    "./*": {
+      "types": "./lib/*.d.ts",
+      "default": "./lib/*.js"
+    }
   },
   "files": [
     "index.js",
+    "index.d.ts",
     "runtime.js",
     "binding.cc",
     "binding.js",
@@ -33,6 +41,7 @@
   },
   "homepage": "https://github.com/holepunchto/bare-ndk#readme",
   "dependencies": {
+    "bare-jni-registry": "^0.1.0",
     "require-asset": "^1.1.0"
   },
   "peerDependencies": {
