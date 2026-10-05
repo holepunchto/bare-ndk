@@ -2,6 +2,7 @@ import AbsoluteSizeSpan = require('./lib/absolute-size-span')
 import Activity = require('./lib/activity')
 import Bitmap = require('./lib/bitmap')
 import BitmapFactory = require('./lib/bitmap-factory')
+import Choreographer = require('./lib/choreographer')
 import * as DisplayMetrics from './lib/display-metrics'
 import Drawable = require('./lib/drawable')
 import EditField = require('./lib/edit-field')
@@ -11,6 +12,7 @@ import ForegroundColorSpan = require('./lib/foreground-color-span')
 import LetterSpacingSpan = require('./lib/letter-spacing-span')
 import StrikethroughSpan = require('./lib/strikethrough-span')
 import UnderlineSpan = require('./lib/underline-span')
+import FrameCallback = require('./lib/frame-callback')
 import FrameGroup = require('./lib/frame-group')
 import GradientDrawable = require('./lib/gradient-drawable')
 import HorizontalScrollView = require('./lib/horizontal-scroll-view')
@@ -33,6 +35,7 @@ export {
   Activity,
   Bitmap,
   BitmapFactory,
+  Choreographer,
   DisplayMetrics,
   Drawable,
   EditField,
@@ -42,6 +45,7 @@ export {
   LetterSpacingSpan,
   StrikethroughSpan,
   UnderlineSpan,
+  FrameCallback,
   FrameGroup,
   GradientDrawable,
   HorizontalScrollView,

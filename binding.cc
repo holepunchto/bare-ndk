@@ -9,6 +9,8 @@
 #include "lib/drawable.h"
 #include "lib/edit-field.h"
 #include "lib/progress-bar.h"
+#include "lib/choreographer.h"
+#include "lib/frame-callback.h"
 #include "lib/toggle.h"
 #include "lib/frame-group.h"
 #include "lib/image-view.h"
@@ -42,6 +44,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   bare_ndk_frame_group_register(bare_native_activity->env);
   bare_ndk_scroll_view_register(bare_native_activity->env);
   bare_ndk_edit_field_register(bare_native_activity->env);
+  bare_ndk_frame_callback_register(bare_native_activity->env);
   bare_ndk_toggle_register(bare_native_activity->env);
   bare_ndk_dialog_register(bare_native_activity->env);
 
@@ -171,6 +174,13 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("progressBarIndeterminate", bare_ndk_progress_bar_indeterminate)
   V("progressBarIndeterminateTint", bare_ndk_progress_bar_indeterminate_tint)
 
+  V("choreographerGetInstance", bare_ndk_choreographer_get_instance)
+  V("choreographerPostFrameCallback", bare_ndk_choreographer_post_frame_callback)
+  V("choreographerRemoveFrameCallback", bare_ndk_choreographer_remove_frame_callback)
+
+  V("frameCallbackInit", bare_ndk_frame_callback_init)
+  V("frameCallbackEventMask", bare_ndk_frame_callback_event_mask)
+
   V("toggleInit", bare_ndk_toggle_init)
   V("toggleEventMask", bare_ndk_toggle_event_mask)
   V("toggleChecked", bare_ndk_toggle_checked)
@@ -226,6 +236,8 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
     err = js_set_named_property(env, exports, name, val); \
     assert(err == 0); \
   }
+
+  V("FRAME_CALLBACK_EVENT_FRAME", bare_ndk_frame_callback_event_frame)
 
   V("TOGGLE_EVENT_CHECKED", bare_ndk_toggle_event_checked)
   V("TOGGLE_EVENT_FOCUS_CHANGED", bare_ndk_toggle_event_focus_changed)
