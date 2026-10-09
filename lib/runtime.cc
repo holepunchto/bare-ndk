@@ -154,6 +154,9 @@ Java_to_holepunch_bare_Activity_setup(JNIEnv *env, jobject self, jobject state, 
   err = uv_async_init(bare__loop, &bare__shutdown, bare__on_shutdown);
   assert(err == 0);
 
+  // Teardown only sends on it, so keeping the loop alive would stop 'beforeExit'.
+  uv_unref(reinterpret_cast<uv_handle_t *>(&bare__shutdown));
+
   err = bare_setup(bare__loop, bare__platform, nullptr, 0, nullptr, nullptr, &bare);
   assert(err == 0);
 
