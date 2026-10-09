@@ -157,6 +157,13 @@ Java_to_holepunch_bare_Activity_setup(JNIEnv *env, jobject self, jobject state, 
   err = bare_setup(bare__loop, bare__platform, nullptr, 0, nullptr, nullptr, &bare);
   assert(err == 0);
 
+  JavaVM *vm;
+  err = env->GetJavaVM(&vm);
+  assert(err == 0);
+
+  err = bare_context_set(bare, "bare.android.jvm.v1", vm, nullptr);
+  assert(err == 0);
+
   bare__bundle = AAssetManager_open(bare__native_activity.assetManager, "app.bundle", AASSET_MODE_BUFFER);
 
   uv_buf_t entry = uv_buf_init((char *) AAsset_getBuffer(bare__bundle), AAsset_getLength(bare__bundle));
