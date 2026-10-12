@@ -200,11 +200,19 @@ bare_ndk_view_default_focus_highlight(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1 || argc == 2);
 
   java_object_t<"android/view/View"> view;
   err = bare_ndk__read_object(env, state, argv[0], "view", &view);
   if (err < 0) return nullptr;
+
+  if (argc == 1) {
+    js_value_t *result;
+    err = js_get_boolean(env, view.get_class().get_method<bool()>("getDefaultFocusHighlightEnabled")(view), &result);
+    assert(err == 0);
+
+    return result;
+  }
 
   bool enabled;
   err = js_get_value(env, js_boolean_t(argv[1]), enabled);
@@ -231,11 +239,19 @@ bare_ndk_view_visible(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1 || argc == 2);
 
   java_object_t<"android/view/View"> view;
   err = bare_ndk__read_object(env, state, argv[0], "view", &view);
   if (err < 0) return nullptr;
+
+  if (argc == 1) {
+    js_value_t *result;
+    err = js_get_boolean(env, view.get_class().get_method<int32_t()>("getVisibility")(view) == 0, &result);
+    assert(err == 0);
+
+    return result;
+  }
 
   bool visible;
   err = js_get_value(env, js_boolean_t(argv[1]), visible);
@@ -260,11 +276,19 @@ bare_ndk_view_alpha(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1 || argc == 2);
 
   java_object_t<"android/view/View"> view;
   err = bare_ndk__read_object(env, state, argv[0], "view", &view);
   if (err < 0) return nullptr;
+
+  if (argc == 1) {
+    js_value_t *result;
+    err = js_create_double(env, view.get_class().get_method<float()>("getAlpha")(view), &result);
+    assert(err == 0);
+
+    return result;
+  }
 
   double alpha;
   err = js_get_value(env, js_number_t(argv[1]), alpha);
@@ -289,11 +313,19 @@ bare_ndk_view_clip_to_outline(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1 || argc == 2);
 
   java_object_t<"android/view/View"> view;
   err = bare_ndk__read_object(env, state, argv[0], "view", &view);
   if (err < 0) return nullptr;
+
+  if (argc == 1) {
+    js_value_t *result;
+    err = js_get_boolean(env, view.get_class().get_method<bool()>("getClipToOutline")(view), &result);
+    assert(err == 0);
+
+    return result;
+  }
 
   bool clip;
   err = js_get_value(env, js_boolean_t(argv[1]), clip);
@@ -318,11 +350,25 @@ bare_ndk_view_background(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1 || argc == 2);
 
   java_object_t<"android/view/View"> view;
   err = bare_ndk__read_object(env, state, argv[0], "view", &view);
   if (err < 0) return nullptr;
+
+  if (argc == 1) {
+    auto drawable = view.get_class().get_method<java_object_t<"android/graphics/drawable/Drawable">()>("getBackground")(view);
+
+    if (static_cast<jobject>(drawable) == nullptr) {
+      js_value_t *result;
+      err = js_get_null(env, &result);
+      assert(err == 0);
+
+      return result;
+    }
+
+    return bare_ndk__tag(env, state, drawable);
+  }
 
   java_object_t<"android/graphics/drawable/Drawable"> drawable;
   err = bare_ndk__read_object(env, state, argv[1], "drawable", &drawable);
@@ -529,7 +575,7 @@ bare_ndk_view_set_padding(js_env_t *env, js_callback_info_t *info) {
 // Set as separate properties instead of a matrix, because a matrix set through
 // `setAnimationMatrix` is drawn but not hit tested. The view would be touched
 // where it is not drawn.
-#define V(name, method) \
+#define V(name, setter, getter) \
   static js_value_t * \
   bare_ndk_view_##name(js_env_t *env, js_callback_info_t *info) { \
     int err; \
@@ -541,36 +587,44 @@ bare_ndk_view_set_padding(js_env_t *env, js_callback_info_t *info) {
     err = js_get_callback_info(env, info, &argc, argv, nullptr, (void **) &state); \
     assert(err == 0); \
 \
-    assert(argc == 2); \
+    assert(argc == 1 || argc == 2); \
 \
     java_object_t<"android/view/View"> view; \
     err = bare_ndk__read_object(env, state, argv[0], "view", &view); \
     if (err < 0) return nullptr; \
+\
+    if (argc == 1) { \
+      js_value_t *result; \
+      err = js_create_double(env, view.get_class().get_method<float()>(getter)(view), &result); \
+      assert(err == 0); \
+\
+      return result; \
+    } \
 \
     double value; \
     err = js_get_value(env, js_number_t(argv[1]), value); \
     assert(err == 0); \
 \
-    view.get_class().get_method<void(float)>(method)(view, static_cast<float>(value)); \
+    view.get_class().get_method<void(float)>(setter)(view, static_cast<float>(value)); \
 \
     return nullptr; \
   }
 
-V(translation_x, "setTranslationX")
-V(translation_y, "setTranslationY")
-V(translation_z, "setTranslationZ")
-V(scale_x, "setScaleX")
-V(scale_y, "setScaleY")
-V(rotation, "setRotation")
-V(rotation_x, "setRotationX")
-V(rotation_y, "setRotationY")
-V(pivot_x, "setPivotX")
-V(pivot_y, "setPivotY")
-V(camera_distance, "setCameraDistance")
-V(elevation, "setElevation")
+V(translation_x, "setTranslationX", "getTranslationX")
+V(translation_y, "setTranslationY", "getTranslationY")
+V(translation_z, "setTranslationZ", "getTranslationZ")
+V(scale_x, "setScaleX", "getScaleX")
+V(scale_y, "setScaleY", "getScaleY")
+V(rotation, "setRotation", "getRotation")
+V(rotation_x, "setRotationX", "getRotationX")
+V(rotation_y, "setRotationY", "getRotationY")
+V(pivot_x, "setPivotX", "getPivotX")
+V(pivot_y, "setPivotY", "getPivotY")
+V(camera_distance, "setCameraDistance", "getCameraDistance")
+V(elevation, "setElevation", "getElevation")
 #undef V
 
-#define V(name, method) \
+#define V(name, setter, getter) \
   static js_value_t * \
   bare_ndk_view_##name(js_env_t *env, js_callback_info_t *info) { \
     int err; \
@@ -582,21 +636,29 @@ V(elevation, "setElevation")
     err = js_get_callback_info(env, info, &argc, argv, nullptr, (void **) &state); \
     assert(err == 0); \
 \
-    assert(argc == 2); \
+    assert(argc == 1 || argc == 2); \
 \
     java_object_t<"android/view/View"> view; \
     err = bare_ndk__read_object(env, state, argv[0], "view", &view); \
     if (err < 0) return nullptr; \
 \
+    if (argc == 1) { \
+      js_value_t *result; \
+      err = js_create_int32(env, view.get_class().get_method<int32_t()>(getter)(view), &result); \
+      assert(err == 0); \
+\
+      return result; \
+    } \
+\
     int32_t value; \
     err = js_get_value(env, js_number_t(argv[1]), value); \
     assert(err == 0); \
 \
-    view.get_class().get_method<void(int32_t)>(method)(view, value); \
+    view.get_class().get_method<void(int32_t)>(setter)(view, value); \
 \
     return nullptr; \
   }
 
-V(outline_ambient_shadow_color, "setOutlineAmbientShadowColor")
-V(outline_spot_shadow_color, "setOutlineSpotShadowColor")
+V(outline_ambient_shadow_color, "setOutlineAmbientShadowColor", "getOutlineAmbientShadowColor")
+V(outline_spot_shadow_color, "setOutlineSpotShadowColor", "getOutlineSpotShadowColor")
 #undef V

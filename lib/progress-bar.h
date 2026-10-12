@@ -40,11 +40,19 @@ bare_ndk_progress_bar_indeterminate(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1 || argc == 2);
 
   java_object_t<"android/widget/ProgressBar"> bar;
   err = bare_ndk__read_object(env, state, argv[0], "progressBar", &bar);
   if (err < 0) return nullptr;
+
+  if (argc == 1) {
+    js_value_t *result;
+    err = js_get_boolean(env, bar.get_class().get_method<bool()>("isIndeterminate")(bar), &result);
+    assert(err == 0);
+
+    return result;
+  }
 
   bool indeterminate;
   err = js_get_value(env, js_boolean_t(argv[1]), indeterminate);
@@ -77,13 +85,21 @@ bare_ndk_progress_bar_indeterminate_tint(js_env_t *env, js_callback_info_t *info
   err = bare_ndk__read_object(env, state, argv[0], "progressBar", &bar);
   if (err < 0) return nullptr;
 
-  int32_t color;
-  err = js_get_value(env, js_number_t(argv[1]), color);
+  java_object_t<"android/content/res/ColorStateList"> tint;
+
+  js_value_type_t type;
+  err = js_typeof(env, argv[1], &type);
   assert(err == 0);
 
-  auto list = java_class_t<"android/content/res/ColorStateList">(jni, bare_ndk__class<"android/content/res/ColorStateList">(jni));
+  if (type != js_null) {
+    int32_t color;
+    err = js_get_value(env, js_number_t(argv[1]), color);
+    assert(err == 0);
 
-  auto tint = list.get_static_method<java_object_t<"android/content/res/ColorStateList">(int32_t)>("valueOf")(color);
+    auto list = java_class_t<"android/content/res/ColorStateList">(jni, bare_ndk__class<"android/content/res/ColorStateList">(jni));
+
+    tint = list.get_static_method<java_object_t<"android/content/res/ColorStateList">(int32_t)>("valueOf")(color);
+  }
 
   bar.get_class().get_method<void(java_object_t<"android/content/res/ColorStateList">)>("setIndeterminateTintList")(bar, tint);
 

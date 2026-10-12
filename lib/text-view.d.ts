@@ -9,7 +9,13 @@ interface NDKTextView<M extends Record<keyof M, unknown[]> = {}> extends NDKView
   set text(value: string | Wrapper)
 
   /** The height of each line. */
-  set lineHeight(value: number)
+  lineHeight: number
+
+  /** The `add` given to `setLineSpacing()`. */
+  readonly lineSpacingExtra: number
+
+  /** The `multiplier` given to `setLineSpacing()`. */
+  readonly lineSpacingMultiplier: number
 
   /** Space each line by its natural height times `multiplier`, plus `add`. */
   setLineSpacing(add: number, multiplier: number): this
@@ -23,15 +29,15 @@ interface NDKTextView<M extends Record<keyof M, unknown[]> = {}> extends NDKView
   set typeface(value: Wrapper)
 
   /** Where the text sits in the view, as `GRAVITY` flags combined with `|`. */
-  set gravity(value: number)
+  gravity: number
 
   /** Whether lines are stretched to fill the width, as a `JUSTIFICATION_MODE` constant. */
-  set justificationMode(value: number)
+  justificationMode: number
 
-  set maxLines(value: number)
+  maxLines: number
 
   /** Where text that does not fit is cut off with "...", such as `'END'`, or `null` for nowhere. */
-  set ellipsize(value: string | null)
+  ellipsize: string | null
 }
 
 declare class NDKTextView<M extends Record<keyof M, unknown[]> = {}> {

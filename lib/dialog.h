@@ -113,3 +113,28 @@ bare_ndk_dialog_show(js_env_t *env, js_callback_info_t *info) {
 
   return nullptr;
 }
+
+static js_value_t *
+bare_ndk_dialog_cancel(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_ndk_state_t *state;
+  err = js_get_callback_info(env, info, NULL, NULL, NULL, (void **) &state);
+  assert(err == 0);
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  java_object_t<"to/holepunch/bare/ndk/Dialog"> dialog;
+  err = bare_ndk__read_object(env, state, argv[0], "dialog", &dialog);
+  if (err < 0) return nullptr;
+
+  dialog.get_class().get_method<void()>("cancel")(dialog);
+
+  return nullptr;
+}

@@ -26,9 +26,16 @@ bare_ndk_typeface_create(js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 2);
 
-  std::string family;
-  err = js_get_value(env, js_string_t(argv[0]), family);
+  bool has_family;
+  err = js_is_string(env, argv[0], &has_family);
   assert(err == 0);
+
+  std::string name;
+
+  if (has_family) {
+    err = js_get_value(env, js_string_t(argv[0]), name);
+    assert(err == 0);
+  }
 
   int32_t style;
   err = js_get_value(env, js_number_t(argv[1]), style);
@@ -36,9 +43,13 @@ bare_ndk_typeface_create(js_env_t *env, js_callback_info_t *info) {
 
   JNIEnv *jni = bare_jni_env();
 
+  java_object_t<"java/lang/String"> family;
+
+  if (has_family) family = java_object_t<"java/lang/String">(jni, java_string_t(jni, name));
+
   auto typefaces = java_class_t<"android/graphics/Typeface">(jni, bare_ndk__class<"android/graphics/Typeface">(jni));
 
-  auto create = typefaces.get_static_method<java_object_t<"android/graphics/Typeface">(std::string, int32_t)>("create");
+  auto create = typefaces.get_static_method<java_object_t<"android/graphics/Typeface">(java_object_t<"java/lang/String">, int32_t)>("create");
 
   return bare_ndk__tag(env, state, create(family, style));
 }

@@ -84,6 +84,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
 
   V("dialogInit", bare_ndk_dialog_init)
   V("dialogShow", bare_ndk_dialog_show)
+  V("dialogCancel", bare_ndk_dialog_cancel)
 
   V("clipDataNewPlainText", bare_ndk_clip_data_new_plain_text)
   V("clipDataItemCount", bare_ndk_clip_data_item_count)
@@ -201,6 +202,8 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("textViewMaxLines", bare_ndk_text_view_max_lines)
   V("textViewEllipsize", bare_ndk_text_view_ellipsize)
   V("textViewLineSpacing", bare_ndk_text_view_line_spacing)
+  V("textViewLineSpacingExtra", bare_ndk_text_view_line_spacing_extra)
+  V("textViewLineSpacingMultiplier", bare_ndk_text_view_line_spacing_multiplier)
   V("textViewTextColor", bare_ndk_text_view_text_color)
   V("textViewTypeface", bare_ndk_text_view_typeface)
   V("textViewGravity", bare_ndk_text_view_gravity)

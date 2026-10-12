@@ -10,7 +10,7 @@ public final class Activity extends android.app.Activity {
   }
 
   private native void
-  setup(Bundle state, AssetManager assets);
+  setup(Bundle state, AssetManager assets, String cache);
 
   private native void
   teardown();
@@ -28,7 +28,7 @@ public final class Activity extends android.app.Activity {
     // inset describes it and nothing can be laid out under it.
     requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-    setup(state, getAssets());
+    setup(state, getAssets(), getCodeCacheDir().getPath());
     super.onCreate(state);
   }
 

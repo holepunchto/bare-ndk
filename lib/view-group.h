@@ -88,11 +88,19 @@ bare_ndk_view_group_clip_children(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1 || argc == 2);
 
   java_object_t<"android/view/ViewGroup"> group;
   err = bare_ndk__read_object(env, state, argv[0], "group", &group);
   if (err < 0) return nullptr;
+
+  if (argc == 1) {
+    js_value_t *result;
+    err = js_get_boolean(env, group.get_class().get_method<bool()>("getClipChildren")(group), &result);
+    assert(err == 0);
+
+    return result;
+  }
 
   bool clip;
   err = js_get_value(env, js_boolean_t(argv[1]), clip);

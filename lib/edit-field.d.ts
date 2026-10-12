@@ -3,6 +3,7 @@ import NDKTextView = require('./text-view')
 /** A view for editing text, as an `android.widget.EditText`. */
 interface NDKEditField extends NDKTextView<NDKEditField.Events> {
   /** Text shown while the field is empty. */
+  get hint(): string | null
   set hint(value: string)
 
   /**
@@ -18,7 +19,10 @@ interface NDKEditField extends NDKTextView<NDKEditField.Events> {
   get selection(): { start: number; end: number }
   set selection(selection: { start?: number; end?: number })
 
-  /** Take the focus and show the soft keyboard. */
+  /**
+   * Take the focus, which shows the soft keyboard once the window has the focus itself. Until
+   * then, show it with `windowInsetsController.show(NDKWindowInsets.TYPE.IME)`.
+   */
   requestFocus(): this
 
   /** Give up the focus and hide the soft keyboard. */

@@ -1,5 +1,6 @@
 import { Wrapper } from 'bare-jni-registry'
 import NDKObject = require('./object')
+import NDKDrawable = require('./drawable')
 import NDKWindowInsets = require('./window-insets')
 import NDKWindowInsetsController = require('./window-insets-controller')
 
@@ -29,50 +30,51 @@ interface NDKView<M extends Record<keyof M, unknown[]> = {}> extends NDKObject<M
   enabled: boolean
 
   /** Whether Android draws its highlight over the view when it has focus. */
-  set defaultFocusHighlight(value: boolean)
+  defaultFocusHighlight: boolean
 
   /** Whether the view is shown. A hidden view still keeps its place in the layout. */
-  set visible(value: boolean)
+  visible: boolean
 
   /** How opaque the view is, from 0 to 1. */
-  set alpha(value: number)
+  alpha: number
 
-  set translationX(value: number)
+  translationX: number
 
-  set translationY(value: number)
+  translationY: number
 
-  set translationZ(value: number)
+  translationZ: number
 
-  set scaleX(value: number)
+  scaleX: number
 
-  set scaleY(value: number)
+  scaleY: number
 
   /** The rotation in degrees. */
-  set rotation(value: number)
+  rotation: number
 
-  set rotationX(value: number)
+  rotationX: number
 
-  set rotationY(value: number)
+  rotationY: number
 
   /** The point the view is scaled and rotated around. */
-  set pivotX(value: number)
+  pivotX: number
 
-  set pivotY(value: number)
+  pivotY: number
 
   /** How far the camera is from the view, for `rotationX` and `rotationY`. */
-  set cameraDistance(value: number)
+  cameraDistance: number
 
   /** How far the view is raised, which decides its shadow. */
-  set elevation(value: number)
+  elevation: number
 
-  set outlineAmbientShadowColor(value: number)
+  outlineAmbientShadowColor: number
 
-  set outlineSpotShadowColor(value: number)
+  outlineSpotShadowColor: number
 
   /** Whether the view is clipped to the outline of its background. */
-  set clipToOutline(value: boolean)
+  clipToOutline: boolean
 
   /** What the view draws behind its content, such as a `NDKGradientDrawable`. */
+  get background(): NDKDrawable | null
   set background(value: Wrapper)
 
   set backgroundColor(value: number)
