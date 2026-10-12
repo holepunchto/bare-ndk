@@ -116,11 +116,30 @@ bare_ndk_edit_field_hint(js_env_t *env, js_callback_info_t *info) {
   err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
   assert(err == 0);
 
-  assert(argc == 2);
+  assert(argc == 1 || argc == 2);
 
   java_object_t<"android/widget/EditText"> field;
   err = bare_ndk__read_object(env, state, argv[0], "editField", &field);
   if (err < 0) return nullptr;
+
+  if (argc == 1) {
+    auto hint = field.get_class().get_method<java_object_t<"java/lang/CharSequence">()>("getHint")(field);
+
+    js_value_t *result;
+
+    if (static_cast<jobject>(hint) == nullptr) {
+      err = js_get_null(env, &result);
+      assert(err == 0);
+    } else {
+      js_string_t string;
+      err = js_create_string(env, hint.get_class().get_method<std::string()>("toString")(hint), string);
+      assert(err == 0);
+
+      result = static_cast<js_value_t *>(string);
+    }
+
+    return result;
+  }
 
   std::string hint;
   err = js_get_value(env, js_string_t(argv[1]), hint);

@@ -6,6 +6,9 @@ import NDKObject = require('./object')
  */
 interface NDKDialog extends NDKObject<NDKDialog.Events> {
   show(): this
+
+  /** Close the dialog as if it were dismissed, which is reported as a `response` with `DISMISSED`. */
+  cancel(): this
 }
 
 declare class NDKDialog {

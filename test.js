@@ -1,0 +1,6 @@
+require('./test/activity')
+require('./test/view')
+require('./test/text')
+require('./test/controls')
+require('./test/scroll-view')
+require('./test/values')

@@ -36,6 +36,11 @@ public final class Dialog implements DialogInterface.OnClickListener, DialogInte
     dialog.show();
   }
 
+  public void
+  cancel() {
+    dialog.cancel();
+  }
+
   private native void
   onResponse(int which);
 

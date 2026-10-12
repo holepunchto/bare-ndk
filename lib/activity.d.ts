@@ -6,8 +6,8 @@ import NDKResources = require('./resources')
 interface NDKActivity extends NDKObject {
   readonly resources: NDKResources
 
-  /** The colour the theme gives an attribute, by its ID from `android.R.attr`. */
-  themeColor(attribute: number): number
+  /** The colour the theme gives an attribute, by its name in `android.R.attr`, such as `'colorAccent'`. */
+  themeColor(attribute: string): number
 
   /** Show `view` as the whole content of the activity. */
   contentView(view: Wrapper): this
