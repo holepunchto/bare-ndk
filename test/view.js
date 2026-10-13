@@ -37,6 +37,23 @@ test('places a child at an exact frame', async (t) => {
   )
 })
 
+test('finds the root of its hierarchy', async (t) => {
+  const group = new FrameGroup()
+  const child = new FrameGroup()
+
+  group.addView(child)
+
+  t.ok(child.rootView === group, 'the topmost group before attaching')
+
+  await mount(t, group)
+
+  const root = child.rootView
+
+  t.ok(root !== group, 'the window once attached')
+  t.ok(group.rootView === root, 'the same for every view in it')
+  t.ok(root.width >= group.width && root.height >= group.height, 'around the group')
+})
+
 test('emits when the size of a group changes', async (t) => {
   const group = new FrameGroup()
 

@@ -28,6 +28,9 @@ interface NDKView<M extends Record<keyof M, unknown[]> = {}> extends NDKObject<M
   /** Pass a touch down to the view, or the child under it. `true` if something handled it. */
   dispatchTouchEvent(event: NDKMotionEvent): boolean
 
+  /** The topmost view of the hierarchy the view is in, which is the view itself if it has no parent. */
+  readonly rootView: NDKView
+
   /** What covers the window, such as the system bars. `null` until the view is attached. */
   readonly rootWindowInsets: NDKWindowInsets | null
 

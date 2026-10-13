@@ -101,6 +101,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("viewBackgroundColor", bare_ndk_view_background_color)
   V("viewWidth", bare_ndk_view_width)
   V("viewHeight", bare_ndk_view_height)
+  V("viewRootView", bare_ndk_view_root_view)
   V("viewRootWindowInsets", bare_ndk_view_root_window_insets)
   V("viewLocationInWindow", bare_ndk_view_location_in_window)
   V("viewDispatchTouchEvent", bare_ndk_view_dispatch_touch_event)
