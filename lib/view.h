@@ -414,6 +414,39 @@ bare_ndk_view_window_insets_controller(js_env_t *env, js_callback_info_t *info) 
 }
 
 static js_value_t *
+bare_ndk_view_dispatch_touch_event(js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_ndk_state_t *state;
+  err = js_get_callback_info(env, info, NULL, NULL, NULL, (void **) &state);
+  assert(err == 0);
+
+  size_t argc = 2;
+  js_value_t *argv[2];
+
+  err = js_get_callback_info(env, info, &argc, argv, nullptr, nullptr);
+  assert(err == 0);
+
+  assert(argc == 2);
+
+  java_object_t<"android/view/View"> view;
+  err = bare_ndk__read_object(env, state, argv[0], "view", &view);
+  if (err < 0) return nullptr;
+
+  java_object_t<"android/view/MotionEvent"> event;
+  err = bare_ndk__read_object(env, state, argv[1], "event", &event);
+  if (err < 0) return nullptr;
+
+  auto handled = view.get_class().get_method<bool(java_object_t<"android/view/MotionEvent">)>("dispatchTouchEvent")(view, event);
+
+  js_value_t *result;
+  err = js_get_boolean(env, handled, &result);
+  assert(err == 0);
+
+  return result;
+}
+
+static js_value_t *
 bare_ndk_view_location_in_window(js_env_t *env, js_callback_info_t *info) {
   int err;
 

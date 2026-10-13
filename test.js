@@ -1,5 +1,6 @@
 require('./test/activity')
 require('./test/view')
+require('./test/motion-event')
 require('./test/text')
 require('./test/controls')
 require('./test/scroll-view')
