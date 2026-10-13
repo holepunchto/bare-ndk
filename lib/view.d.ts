@@ -1,6 +1,7 @@
 import { Wrapper } from 'bare-jni-registry'
 import NDKObject = require('./object')
 import NDKDrawable = require('./drawable')
+import NDKMotionEvent = require('./motion-event')
 import NDKWindowInsets = require('./window-insets')
 import NDKWindowInsetsController = require('./window-insets-controller')
 
@@ -23,6 +24,9 @@ interface NDKView<M extends Record<keyof M, unknown[]> = {}> extends NDKObject<M
 
   /** Where the view is in its window. */
   readonly locationInWindow: { x: number; y: number }
+
+  /** Pass a touch down to the view, or the child under it. `true` if something handled it. */
+  dispatchTouchEvent(event: NDKMotionEvent): boolean
 
   /** What covers the window, such as the system bars. `null` until the view is attached. */
   readonly rootWindowInsets: NDKWindowInsets | null

@@ -14,10 +14,12 @@
 #include "lib/toggle.h"
 #include "lib/frame-group.h"
 #include "lib/image-view.h"
+#include "lib/motion-event.h"
 #include "lib/resources.h"
 #include "lib/scroll-view.h"
 #include "lib/span.h"
 #include "lib/spannable-string-builder.h"
+#include "lib/system-clock.h"
 #include "lib/text-view.h"
 #include "lib/text.h"
 #include "lib/typeface.h"
@@ -101,6 +103,7 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("viewHeight", bare_ndk_view_height)
   V("viewRootWindowInsets", bare_ndk_view_root_window_insets)
   V("viewLocationInWindow", bare_ndk_view_location_in_window)
+  V("viewDispatchTouchEvent", bare_ndk_view_dispatch_touch_event)
   V("viewWindowInsetsController", bare_ndk_view_window_insets_controller)
 
   V("windowInsetsControllerShow", bare_ndk_window_insets_controller_show)
@@ -178,6 +181,16 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("choreographerGetInstance", bare_ndk_choreographer_get_instance)
   V("choreographerPostFrameCallback", bare_ndk_choreographer_post_frame_callback)
   V("choreographerRemoveFrameCallback", bare_ndk_choreographer_remove_frame_callback)
+
+  V("motionEventObtain", bare_ndk_motion_event_obtain)
+  V("motionEventRecycle", bare_ndk_motion_event_recycle)
+  V("motionEventAction", bare_ndk_motion_event_action)
+  V("motionEventX", bare_ndk__motion_event_float<"getX">)
+  V("motionEventY", bare_ndk__motion_event_float<"getY">)
+  V("motionEventDownTime", bare_ndk__motion_event_time<"getDownTime">)
+  V("motionEventEventTime", bare_ndk__motion_event_time<"getEventTime">)
+
+  V("systemClockUptimeMillis", bare_ndk_system_clock_uptime_millis)
 
   V("frameCallbackInit", bare_ndk_frame_callback_init)
   V("frameCallbackEventMask", bare_ndk_frame_callback_event_mask)
@@ -260,6 +273,11 @@ bare_ndk_exports(js_env_t *env, js_value_t *exports) {
   V("FRAME_GROUP_EVENT_MOVE", bare_ndk_frame_group_event_move)
   V("FRAME_GROUP_EVENT_UP", bare_ndk_frame_group_event_up)
   V("FRAME_GROUP_EVENT_CANCEL", bare_ndk_frame_group_event_cancel)
+
+  V("MOTION_EVENT_ACTION_DOWN", bare_ndk__motion_event_constant("ACTION_DOWN"))
+  V("MOTION_EVENT_ACTION_UP", bare_ndk__motion_event_constant("ACTION_UP"))
+  V("MOTION_EVENT_ACTION_MOVE", bare_ndk__motion_event_constant("ACTION_MOVE"))
+  V("MOTION_EVENT_ACTION_CANCEL", bare_ndk__motion_event_constant("ACTION_CANCEL"))
 
   V("WINDOW_INSETS_TYPE_SYSTEM_BARS", bare_ndk__window_insets_type("systemBars"))
 

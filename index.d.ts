@@ -17,10 +17,12 @@ import FrameGroup = require('./lib/frame-group')
 import GradientDrawable = require('./lib/gradient-drawable')
 import HorizontalScrollView = require('./lib/horizontal-scroll-view')
 import ImageView = require('./lib/image-view')
+import MotionEvent = require('./lib/motion-event')
 import Resources = require('./lib/resources')
 import ScrollView = require('./lib/scroll-view')
 import * as Spanned from './lib/spanned'
 import SpannableStringBuilder = require('./lib/spannable-string-builder')
+import * as SystemClock from './lib/system-clock'
 import TextView = require('./lib/text-view')
 import Typeface = require('./lib/typeface')
 import TypefaceSpan = require('./lib/typeface-span')
@@ -50,10 +52,12 @@ export {
   GradientDrawable,
   HorizontalScrollView,
   ImageView,
+  MotionEvent,
   Resources,
   ScrollView,
   Spanned,
   SpannableStringBuilder,
+  SystemClock,
   TextView,
   Typeface,
   TypefaceSpan,
