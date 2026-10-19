@@ -30,3 +30,14 @@ exports.mount = async function mount(t, child, width = 400, height = 300) {
 
   return root
 }
+
+// Placed away from the corner of the root, so a point has to be converted to
+// reach the view.
+exports.place = function place(t, view, width, height) {
+  const group = new FrameGroup()
+
+  group.addView(view)
+  group.setFrame(view, 40, 30, width, height)
+
+  return exports.mount(t, group)
+}

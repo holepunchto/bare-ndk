@@ -1,7 +1,8 @@
 const { test } = require('bare-tap')
 const { afterAnimationFrame } = require('bare-animation-frame')
+const Pointer = require('bare-pointer')
 const { FrameGroup, GradientDrawable, View } = require('..')
-const { mount } = require('./helpers')
+const { mount, place } = require('./helpers')
 
 test('cannot construct a plain view', (t) => {
   t.throws(() => new View(), TypeError)
@@ -205,4 +206,32 @@ test('pads a view', (t) => {
   group.backgroundColor = 0x80ff0000
 
   t.pass('takes a background colour')
+})
+
+test('touches a view with the pointer', async (t) => {
+  const pointer = new Pointer()
+
+  t.teardown(() => pointer.destroy())
+
+  const view = new FrameGroup()
+
+  await place(t, view, 200, 150)
+
+  const events = []
+
+  for (const name of ['down', 'move', 'up']) {
+    view.on(name, (x, y) => events.push([name, x, y]))
+  }
+
+  await pointer.down(view, 10, 10)
+  await pointer.move(view, 50, 40)
+  await pointer.move(view, 90, 70)
+  await pointer.up()
+
+  t.deepStrictEqual(events, [
+    ['down', 10, 10],
+    ['move', 50, 40],
+    ['move', 90, 70],
+    ['up', 90, 70]
+  ])
 })
