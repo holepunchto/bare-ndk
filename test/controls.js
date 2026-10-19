@@ -1,7 +1,8 @@
 const { test } = require('bare-tap')
 const { afterAnimationFrame } = require('bare-animation-frame')
+const Pointer = require('bare-pointer')
 const { EditField, FrameGroup, ProgressBar, Toggle } = require('..')
-const { mount } = require('./helpers')
+const { mount, place } = require('./helpers')
 
 test('emits when the text of a field changes', (t) => {
   const field = new EditField()
@@ -128,6 +129,24 @@ test('gives up the focus', async (t) => {
   t.deepStrictEqual(events, [0], 'lost the focus')
 })
 
+test('focuses a field with the pointer', async (t) => {
+  const pointer = new Pointer()
+
+  t.teardown(() => pointer.destroy())
+
+  const field = new EditField()
+
+  await place(t, field, 300, 100)
+
+  const events = []
+
+  field.on('focusChanged', (focused) => events.push(focused))
+
+  await pointer.tap(field)
+
+  t.deepStrictEqual(events, [1])
+})
+
 test('emits when a switch is toggled', (t) => {
   const toggle = new Toggle()
 
@@ -147,6 +166,26 @@ test('emits when a switch is toggled', (t) => {
   t.equal(changes, 1, 'not for the same value')
 })
 
+test('toggles a switch with the pointer', async (t) => {
+  const pointer = new Pointer()
+
+  t.teardown(() => pointer.destroy())
+
+  const toggle = new Toggle()
+  const { width, height } = toggle.naturalSize
+
+  await place(t, toggle, width, height)
+
+  let changes = 0
+
+  toggle.on('checked', () => changes++)
+
+  await pointer.tap(toggle)
+
+  t.equal(changes, 1, 'changed')
+  t.equal(toggle.checked, true, 'on')
+})
+
 test('has a natural size', (t) => {
   const { width, height } = new Toggle().naturalSize
 
@@ -159,6 +198,28 @@ test('disables a switch', (t) => {
   toggle.enabled = false
 
   t.equal(toggle.enabled, false)
+})
+
+test('does not toggle a disabled switch with the pointer', async (t) => {
+  const pointer = new Pointer()
+
+  t.teardown(() => pointer.destroy())
+
+  const toggle = new Toggle()
+  const { width, height } = toggle.naturalSize
+
+  toggle.enabled = false
+
+  await place(t, toggle, width, height)
+
+  let changes = 0
+
+  toggle.on('checked', () => changes++)
+
+  await pointer.tap(toggle)
+
+  t.equal(changes, 0, 'not changed')
+  t.equal(toggle.checked, false, 'off')
 })
 
 test('spins a progress bar', (t) => {
