@@ -1,7 +1,14 @@
 const { test } = require('bare-tap')
 const { afterAnimationFrame } = require('bare-animation-frame')
-const { Activity, DisplayMetrics, EditField, FrameGroup, Resources, WindowInsets } = require('..')
-const UIModeManager = require('../lib/ui-mode-manager')
+const {
+  Activity,
+  DisplayMetrics,
+  EditField,
+  FrameGroup,
+  Resources,
+  UiModeManager,
+  WindowInsets
+} = require('..')
 const { mount, root } = require('./helpers')
 
 // Insets arrive several times as the keyboard animates, so this waits for the
@@ -104,7 +111,7 @@ test('shows and hides the keyboard', async (t) => {
 test('switches between light and dark mode', async (t) => {
   const group = root()
   const { MASK, YES, NO } = Resources.UI_MODE_NIGHT
-  const { MODE_NIGHT } = UIModeManager
+  const { MODE_NIGHT } = UiModeManager
 
   const night = () => Activity.resources.configuration.uiMode & MASK
   const changed = () => new Promise((resolve) => group.once('configurationChanged', resolve))
@@ -114,7 +121,7 @@ test('switches between light and dark mode', async (t) => {
 
   let change = changed()
 
-  UIModeManager.setApplicationNightMode(dark ? MODE_NIGHT.YES : MODE_NIGHT.NO)
+  UiModeManager.setApplicationNightMode(dark ? MODE_NIGHT.YES : MODE_NIGHT.NO)
 
   await change
 
@@ -124,7 +131,7 @@ test('switches between light and dark mode', async (t) => {
   // following the system again.
   change = changed()
 
-  UIModeManager.setApplicationNightMode(MODE_NIGHT.AUTO)
+  UiModeManager.setApplicationNightMode(MODE_NIGHT.AUTO)
 
   await change
 

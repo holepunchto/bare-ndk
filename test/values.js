@@ -1,9 +1,16 @@
 const { test } = require('bare-tap')
 const { afterAnimationFrame } = require('bare-animation-frame')
-const { Activity, BitmapFactory, Choreographer, FrameCallback, ImageView, WebView } = require('..')
-const ClipData = require('../lib/clip-data')
-const Dialog = require('../lib/dialog')
-const ClipboardManager = require('../lib/clipboard-manager')
+const {
+  Activity,
+  BitmapFactory,
+  Choreographer,
+  ClipData,
+  ClipboardManager,
+  Dialog,
+  FrameCallback,
+  ImageView,
+  WebView
+} = require('..')
 const { mount } = require('./helpers')
 
 const fixture = require.asset('./fixtures/image.png', __filename)

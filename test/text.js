@@ -9,9 +9,9 @@ const {
   TextView,
   Typeface,
   TypefaceSpan,
-  UnderlineSpan
+  UnderlineSpan,
+  text
 } = require('..')
-const text = require('../lib/text')
 
 test('sets the text of a text view', (t) => {
   const view = new TextView()
