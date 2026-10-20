@@ -3,6 +3,9 @@ import Activity = require('./lib/activity')
 import Bitmap = require('./lib/bitmap')
 import BitmapFactory = require('./lib/bitmap-factory')
 import Choreographer = require('./lib/choreographer')
+import * as ClipboardManager from './lib/clipboard-manager'
+import ClipData = require('./lib/clip-data')
+import Dialog = require('./lib/dialog')
 import * as DisplayMetrics from './lib/display-metrics'
 import Drawable = require('./lib/drawable')
 import EditField = require('./lib/edit-field')
@@ -26,11 +29,14 @@ import * as SystemClock from './lib/system-clock'
 import TextView = require('./lib/text-view')
 import Typeface = require('./lib/typeface')
 import TypefaceSpan = require('./lib/typeface-span')
+import * as UiModeManager from './lib/ui-mode-manager'
 import View = require('./lib/view')
 import ViewGroup = require('./lib/view-group')
 import WebSettings = require('./lib/web-settings')
 import WebView = require('./lib/web-view')
 import WindowInsets = require('./lib/window-insets')
+import WindowInsetsController = require('./lib/window-insets-controller')
+import * as text from './lib/text'
 
 export {
   AbsoluteSizeSpan,
@@ -38,6 +44,9 @@ export {
   Bitmap,
   BitmapFactory,
   Choreographer,
+  ClipboardManager,
+  ClipData,
+  Dialog,
   DisplayMetrics,
   Drawable,
   EditField,
@@ -61,9 +70,12 @@ export {
   TextView,
   Typeface,
   TypefaceSpan,
+  UiModeManager,
   View,
   ViewGroup,
   WebSettings,
   WebView,
-  WindowInsets
+  WindowInsets,
+  WindowInsetsController,
+  text
 }
