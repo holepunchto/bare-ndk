@@ -8,7 +8,7 @@ project(bare_android C CXX)
 
 use_java()
 
-fetch_package("github:holepunchto/bare@1.33.5")
+fetch_package("github:holepunchto/bare@1.35.1")
 fetch_package("github:holepunchto/libpath")
 fetch_package("github:holepunchto/libjstl")
 fetch_package("github:holepunchto/libjnitl")
