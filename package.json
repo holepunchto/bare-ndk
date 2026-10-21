@@ -1,6 +1,6 @@
 {
   "name": "bare-ndk",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Android NDK bindings and runtime for Bare",
   "exports": {
     "./package": "./package.json",
