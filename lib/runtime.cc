@@ -50,7 +50,7 @@ static ANativeActivity bare__native_activity;
 static AAsset *bare__bundle = nullptr;
 static bool bare__started = false;
 
-ANativeActivity *bare_native_activity = &bare__native_activity;
+__attribute__((visibility("default"))) ANativeActivity *bare_native_activity = &bare__native_activity;
 
 static void
 bare__on_shutdown(uv_async_t *handle) {
@@ -118,7 +118,7 @@ bare__run(void) {
 // Only the pump arms the timer, so work scheduled from a Java callback would
 // wait until something else woke the loop. Android has no hook for the moment
 // before the looper sleeps, so an addon that calls into JavaScript says so.
-extern "C" void
+extern "C" __attribute__((visibility("default"))) void
 bare_native_wake(void) {
   bare__arm();
 }
@@ -306,7 +306,7 @@ bare__extract_assets(AAssetManager *manager, const std::string &directory) {
   assert(err == 0);
 }
 
-extern "C" void
+extern "C" JNIEXPORT void
 Java_to_holepunch_bare_Activity_setup(JNIEnv *env, jobject self, jobject state, jobject assets, jstring cache) {
   int err;
 
@@ -381,7 +381,7 @@ Java_to_holepunch_bare_Activity_setup(JNIEnv *env, jobject self, jobject state, 
   bare__run();
 }
 
-extern "C" void
+extern "C" JNIEXPORT void
 Java_to_holepunch_bare_Activity_teardown(JNIEnv *env, jobject self) {
   int err;
 
@@ -420,7 +420,7 @@ Java_to_holepunch_bare_Activity_teardown(JNIEnv *env, jobject self) {
   bare__started = false;
 }
 
-extern "C" void
+extern "C" JNIEXPORT void
 Java_to_holepunch_bare_Activity_suspend(JNIEnv *env, jobject self) {
   int err;
 
@@ -428,7 +428,7 @@ Java_to_holepunch_bare_Activity_suspend(JNIEnv *env, jobject self) {
   assert(err == 0);
 }
 
-extern "C" void
+extern "C" JNIEXPORT void
 Java_to_holepunch_bare_Activity_resume(JNIEnv *env, jobject self) {
   int err;
 
