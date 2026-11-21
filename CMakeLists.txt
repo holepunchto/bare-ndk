@@ -36,6 +36,7 @@ find_android_jar(android_jar)
 
 add_dex(
   bare_runtime_classes
+  OUTPUT_NAME classes
   SOURCES
     lib/runtime/Activity.java
   INCLUDE_JARS
