@@ -36,7 +36,6 @@ find_android_jar(android_jar)
 
 add_dex(
   bare_runtime_classes
-  OUTPUT_NAME classes
   SOURCES
     lib/runtime/Activity.java
   INCLUDE_JARS
@@ -104,16 +103,22 @@ bare_module_target("." module NAME name)
 
 install(FILES $<TARGET_FILE:bare_runtime::shared> DESTINATION ${target})
 
+install(FILES ${android_stl} DESTINATION ${target}/bare)
+
 install(
-  FILES
-    ${android_stl}
-    $<TARGET_PROPERTY:bare_runtime_classes,DEX_FILE>
+  FILES $<TARGET_PROPERTY:bare_runtime_classes,DEX_FILE>
   DESTINATION ${target}/bare
+  RENAME classes.dex
 )
 
 install(
-  FILES
-    $<TARGET_PROPERTY:bare_ndk_classes,JAR_FILE>
-    $<TARGET_PROPERTY:bare_ndk_classes,DEX_FILE>
+  FILES $<TARGET_PROPERTY:bare_ndk_classes,JAR_FILE>
   DESTINATION ${target}/${name}
+  RENAME classes.jar
+)
+
+install(
+  FILES $<TARGET_PROPERTY:bare_ndk_classes,DEX_FILE>
+  DESTINATION ${target}/${name}
+  RENAME classes.dex
 )
